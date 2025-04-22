@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<DialogPane fx:id="dialogPane" prefWidth="300.0" style="-fx-background-color: white;" stylesheets="@../../../styles/dialog_style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.iuh.fit.coffee.quanlycuahangcaphe.app.controller.dialog.SetQuantityController">
+   <header>
+      <FlowPane alignment="CENTER" style="-fx-background-color: #8B5A2B;">
+         <children>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Điều Chỉnh Số Lượng Sản Phẩm">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+               <FlowPane.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </FlowPane.margin>
+            </Text>
+         </children>
+      </FlowPane>
+   </header>
+   <content>
+      <FlowPane alignment="CENTER">
+         <children>
+            <GridPane prefHeight="60.0" prefWidth="200.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <TextField prefHeight="35.0" promptText="Nhập số lượng sản phẩm" style="-fx-background-color: #f5f3f2; -fx-border-color: transparent transparent transparent  #8B5A2B; -fx-border-width: 5px;" GridPane.rowIndex="1" />
+                  <Label text="Nhập số lượng:" />
+               </children>
+            </GridPane>
+         </children>
+      </FlowPane>
+   </content>
+
+</DialogPane>
