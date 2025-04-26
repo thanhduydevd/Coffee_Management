@@ -1,129 +1,61 @@
 package com.damcafe.app.controller;
 
-import com.damcafe.app.connectDB.ConnectDB;
-import com.damcafe.app.dao.TaiKhoan_DAO;
-import com.damcafe.app.entity.UserSession;
-import com.damcafe.app.gui.MainApp;
+import animatefx.animation.*;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import javafx.stage.Window;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.Optional;
 
-public class LoginController{
-    private TaiKhoan_DAO tk_dao;
+public class LoginController {
+    @FXML
+    private Pane pRegister;
+    @FXML
+    private Pane pLogin;
+    @FXML
+    private ImageView imgLogo;
 
     @FXML
-    private Label notification_login;
-
-    @FXML
-    private TextField txtname_login, txtpass_login;
-    @FXML
-    private Button btn_login;
-
-    @FXML
-    private void initialize(){
-
-        btn_login.setOnAction(e -> {
-            if (checklogin()){
-                if (checktnhanvien()){
-                    notification_login.setText("Đăng nhập thành công");
-                    notification_login.setStyle("-fx-text-fill: green;");
-                    UserSession.setUsername(txtname_login.getText());
-                    try {
-                        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("/com/damcafe/app/views/dashboard.fxml"));
-                        Parent root = fxmlLoader.load();
-
-                        Stage newStage = new Stage();
-                        newStage.setTitle("");
-                        newStage.setScene(new Scene(root));
-                        newStage.setMaximized(true);
-                        newStage.initStyle(StageStyle.DECORATED);
-                        newStage.show();
-
-
-                        Stage oldStage = (Stage) btn_login.getScene().getWindow();
-                        oldStage.close();
-
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-        });
-        txtname_login.setOnKeyReleased(e -> {
-            checklogin();
-        });
-        txtpass_login.setOnKeyReleased(e -> {
-            checklogin();
-        });
+    public void initialize(){
+        new BounceInDown(pLogin).playOnFinished(new Shake(imgLogo)).play();
     }
 
-    private boolean checklogin(){
-        // Kiểm tra tên đăng nhập
-        if (txtname_login.getText().isEmpty()){
-            notification_login.setText("Vui lòng nhập tên đăng nhập");
-            notification_login.setStyle("-fx-text-fill: red;");
-            return false;
-        } else {
-            if (!txtname_login.getText().matches("^(?=.*[A-Z])(?=.*\\d)[^\\s]{8,}$")){
-                notification_login.setText("Tên đăng nhập phải chứa ít nhất 1 chữ cái viết hoa, 1 số và 8 ký tự");
-                notification_login.setStyle("-fx-text-fill: red;");
-                if (!txtname_login.isFocused()) {
-                    txtname_login.requestFocus();
-                }
-                return false;
-            }
-        }
-
-        // Kiểm tra mật khẩu
-        if (txtpass_login.getText().isEmpty()) {
-            notification_login.setText("Vui lòng nhập mật khẩu");
-            notification_login.setStyle("-fx-text-fill: red;");
-            return false;
-        } else {
-            if (!txtpass_login.getText().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w])[^\\s]{8,}$")){
-                notification_login.setText("Mật khẩu phải có 8 ký tự, 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt.");
-                notification_login.setStyle("-fx-text-fill: red;");
-                if (!txtpass_login.isFocused()) {
-                    txtpass_login.requestFocus();
-                }
-                return false;
-            }
-        }
-
-
-        notification_login.setText("");
-        return true;
+    @FXML
+    protected void onRegisterNow() {
+        pLogin.setVisible(false);
+        new BounceInUp(pRegister).play();
+        pRegister.setVisible(true);
     }
 
-    private boolean checktnhanvien(){
-        try {
-            Connection con = ConnectDB.getInstance().connect();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        tk_dao = new TaiKhoan_DAO();
-        String id = txtname_login.getText();
-        String pass = txtpass_login.getText();
-        if (tk_dao.getTaiKhoanTheoTen(id) == null){
-            notification_login.setText("Tên đăng nhập không tồn tại");
-            notification_login.setStyle("-fx-text-fill: red;");
-            return false;
-        }else if (!tk_dao.getTaiKhoanTheoTen(id).getMatKhau().equals(pass)) {
-            notification_login.setText("Mật khẩu không đúng");
-            notification_login.setStyle("-fx-text-fill: red;");
-            return false;
-        }
-        return true;
+    @FXML
+    protected void onLoginNow() {
+        pRegister.setVisible(false);
+        new BounceInDown(pLogin).play();
+        pLogin.setVisible(true);
     }
 
+    @FXML
+    protected void onExit() {
+        Alert alertExit = new Alert(Alert.AlertType.CONFIRMATION);
+        alertExit.setTitle("Xác nhận thoát");
+        alertExit.setContentText("Bạn có chắc chắn muốn thoát?");
+        alertExit.setHeaderText(null);
+        alertExit.getButtonTypes().setAll(ButtonType.YES,ButtonType.NO);
+
+        Optional<ButtonType> result = alertExit.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.YES)
+            System.exit(0);
+    }
+
+    @FXML
+    protected void onHide() {
+        Window window = pLogin.getScene().getWindow();
+        if (window instanceof Stage) {
+            ((Stage) window).setIconified(true);
+        }
+    }
 }

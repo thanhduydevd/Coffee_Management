@@ -33,7 +33,6 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                      <children>
-                        <FontAwesomeIcon fill="#8b5a2b" glyphName="LIST" size="2em" />
                         <Text fill="#8b5a2b" strokeType="OUTSIDE" strokeWidth="0.0" text="Danh Sách Đơn Hàng">
                            <font>
                               <Font name="System Bold" size="20.0" />
@@ -68,8 +67,8 @@
                            </font>
                         </Label>
                         <TextField promptText="Nhập mã hoá đơn" GridPane.columnIndex="1" />
-                        <ComboBox prefWidth="300.0" promptText="Sắp xếp hoá đơn" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <DatePicker prefHeight="25.0" prefWidth="300.0" promptText="Chọn ngày lập" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <ComboBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <DatePicker GridPane.columnIndex="1" GridPane.rowIndex="1" />
                      </children>
                      <VBox.margin>
                         <Insets />
