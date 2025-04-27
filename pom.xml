@@ -71,11 +71,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-<<<<<<< HEAD
-                                edu.iuh.fit.coffee.quanlycuahangcaphe/com.damcafe.app.gui.Dashboard
-=======
-                                edu.iuh.fit.coffee.quanlycuahangcaphe/edu.iuh.fit.coffee.quanlycuahangcaphe.app.Dashboard
->>>>>>> f7cf646124ad67dfc09201e791b3ff2b36b63b37
+                                com.damcafe.app.gui.MainApp
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

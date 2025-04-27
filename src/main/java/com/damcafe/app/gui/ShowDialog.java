@@ -6,10 +6,10 @@ import javafx.scene.control.DialogPane;
 
 import java.io.IOException;
 
-public class DialogFunction extends Dialog {
+public class ShowDialog extends Dialog {
     private String mainFunction;
 
-    public DialogFunction(String mainFunction){
+    public ShowDialog(String mainFunction){
         this.mainFunction = mainFunction;
         setHeaderText(null);
         setGraphic(null);
@@ -31,6 +31,7 @@ public class DialogFunction extends Dialog {
             case "huymon" -> "/com/damcafe/app/views/order/dialogs/cancel_order.fxml";
             case "thanhtoan" -> "/com/damcafe/app/views/order/dialogs/payment.fxml";
             case "chitietdonhang" -> "/com/damcafe/app/views/order/dialogs/order_detail.fxml";
+            case "thaydoimatkhau" -> "/com/damcafe/app/views/account/dialogs/change_password.fxml";
             default -> throw new IllegalArgumentException("Chức năng không tồn tại: " + mainFunction);
         };
     }
