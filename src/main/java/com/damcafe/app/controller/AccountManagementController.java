@@ -4,15 +4,15 @@ import com.damcafe.app.gui.ShowDialog;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
-public class ListOrderController {
+public class AccountManagementController {
     @FXML
-    private Button btnOrderDetail;
+    private Button btnChangePassword;
 
 
     public void initialize(){
 
-        //Sự kiện click cho các button ở chức năng xem đơn hàng
-        btnOrderDetail.setOnAction(e-> openDialog("chitietdonhang"));
+        //Sự kiện click cho các button ở chức năng quản lý tài khoản
+        btnChangePassword.setOnAction(e -> openDialog("thaydoimatkhau"));
     }
 
     public void openDialog(String chucNang) {
