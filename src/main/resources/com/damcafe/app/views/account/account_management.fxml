@@ -1,31 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="paneQuanLyTaiKhoan" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="paneQuanLyTaiKhoan" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.damcafe.app.controller.AccountManagementController">
    <children>
       <ScrollPane fitToWidth="true" prefHeight="625.0" stylesheets="@../../styles/dashboard_style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
          <padding>
             <Insets left="5.0" right="5.0" top="10.0" />
          </padding>
          <content>
-            <VBox alignment="TOP_CENTER" prefHeight="200.0" spacing="10.0">
+            <VBox alignment="TOP_CENTER" spacing="10.0">
                <children>
                   <HBox alignment="CENTER" spacing="10.0" style="-fx-background-color: white;">
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                      <children>
+                        <FontAwesomeIcon fill="#8b5a2b" glyphName="USER" size="2em" />
                         <Text fill="#8b5a2b" strokeType="OUTSIDE" strokeWidth="0.0" text="Quản Lý Tài Khoản">
                            <font>
                               <Font name="System Bold" size="20.0" />
@@ -33,36 +38,76 @@
                         </Text>
                      </children>
                   </HBox>
-                  <HBox prefHeight="100.0" spacing="10.0">
+                  <FlowPane />
+                  <HBox alignment="CENTER" spacing="10.0">
                      <children>
-                        <VBox alignment="CENTER" prefHeight="200.0" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 10px;">
+                        <VBox alignment="TOP_CENTER" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 10px;" HBox.hgrow="ALWAYS">
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
                            <children>
-                              <ImageView fitHeight="150.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../../images/users/user.png" />
                                  </image>
                               </ImageView>
-                              <Text fill="#8b5a2b" strokeType="OUTSIDE" strokeWidth="0.0" text="dothanhduy333@gmail.com">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Text>
+                              <VBox alignment="CENTER">
+                                 <children>
+                                    <Text fill="#8b5a2b" strokeType="OUTSIDE" strokeWidth="0.0" text="THÀNH DUY">
+                                       <font>
+                                          <Font name="System Bold" size="25.0" />
+                                       </font>
+                                    </Text>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Nhân viên">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Text>
+                                    <GridPane alignment="TOP_CENTER">
+                                       <columnConstraints>
+                                          <ColumnConstraints minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints minWidth="10.0" prefWidth="200.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Địa chỉ:">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Text>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Số điện thoại:" GridPane.rowIndex="1">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Text>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Email:" GridPane.rowIndex="2">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Text>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Quận 4, Tp HCM" GridPane.columnIndex="1" />
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="0867424460" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="dothanhduy333@gmail.com" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mật khẩu:" GridPane.rowIndex="3">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Text>
+                                          <Button fx:id="btnChangePassword" mnemonicParsing="false" style="-fx-background-color: #8B5A2B; -fx-text-fill: white;" text="Đổi mật khẩu" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                             <graphic>
+                                                <FontAwesomeIcon fill="WHITE" glyphName="EDIT" />
+                                             </graphic>
+                                          </Button>
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </VBox>
                            </children>
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                        </VBox>
-                        <VBox spacing="5.0" style="-fx-background-color: white; -fx-background-radius: 5px;">
-                           <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mã nhân viên" />
-                              <TextField editable="false" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Họ tên" />
-                              <TextField />
-                              <Button mnemonicParsing="false" text="Đổi mật khẩu" />
-                           </children>
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
                         </VBox>
                      </children>
                   </HBox>

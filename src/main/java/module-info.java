@@ -3,6 +3,8 @@ module com.damcafe.app {
     requires com.dlsc.formsfx;
     requires animatefx;
     requires javafx.graphics;
+    requires java.desktop;
+    requires java.sql;
 
     exports com.damcafe.app.controller;
     opens com.damcafe.app.controller to javafx.fxml;

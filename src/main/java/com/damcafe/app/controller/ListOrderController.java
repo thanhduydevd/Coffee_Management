@@ -1,6 +1,6 @@
 package com.damcafe.app.controller;
 
-import com.damcafe.app.gui.DialogFunction;
+import com.damcafe.app.gui.ShowDialog;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
@@ -16,7 +16,7 @@ public class ListOrderController {
     }
 
     public void openDialog(String chucNang) {
-        DialogFunction dialog = new DialogFunction(chucNang);
+        ShowDialog dialog = new ShowDialog(chucNang);
         dialog.showAndWait();
     }
 }
