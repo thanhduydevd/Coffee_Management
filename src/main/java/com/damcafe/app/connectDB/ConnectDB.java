@@ -12,11 +12,12 @@ public class ConnectDB {
     public static ConnectDB getInstance() {
         return instance;
     }
-    public void connect() throws SQLException {
-        String url = "jdbc:sqlserver://localhost:1433;databasename=";
-        String user = "";
-        String password = "";
+    public Connection connect() throws SQLException {
+        String url = "jdbc:sqlserver://35.238.175.153:1433;databasename=QuanCafe";
+        String user = "sqlserver";
+        String password = "admin";
         con = DriverManager.getConnection(url, user, password);
+        return con;
     }
     public void disconnect() {
         if (con != null)
