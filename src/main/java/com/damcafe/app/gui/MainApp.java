@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
@@ -15,8 +16,8 @@ public class MainApp extends Application {
         stage.setMaximized(true);
 
         /** Trang đăng ký/đăng nhập chạy 2 lệnh này **/
-        //stage.initStyle(StageStyle.UNDECORATED);
-        //stage.setMaximized(false);
+//        stage.initStyle(StageStyle.UNDECORATED);
+//        stage.setMaximized(false);
         /**----------------------------------------**/
 
         stage.setScene(scene);

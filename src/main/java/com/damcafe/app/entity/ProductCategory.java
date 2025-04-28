@@ -38,7 +38,7 @@ public class ProductCategory {
 
     @Override
     public String toString() {
-        return tenLoaiSanPham;
+        return tenLoaiSanPham; // để hiển thị tên loại sản phẩm khi đưa vào ComboBox
     }
 }
 
