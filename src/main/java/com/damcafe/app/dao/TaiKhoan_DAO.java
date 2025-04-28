@@ -4,7 +4,7 @@
  * Copyright (c) 2025 IUH. All rights reserved.
  */
 
-package dao;
+package com.damcafe.app.dao;
 
 import com.damcafe.app.connectDB.ConnectDB;
 import com.damcafe.app.entity.NhanVien;

@@ -4,7 +4,7 @@
  * Copyright (c) 2025 IUH. All rights reserved.
  */
 
-package dao;
+package com.damcafe.app.dao;
 
 import com.damcafe.app.connectDB.ConnectDB;
 import com.damcafe.app.entity.NhanVien;
@@ -13,7 +13,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 /*
  * @description
