@@ -1,20 +1,22 @@
 package com.damcafe.app.entity;
 
 import java.util.Objects;
+import com.damcafe.app.entity.ProductCategory;
 
 public class SanPham {
     private final String maSanPham;
     private String tenSanPham;
     private double gia;
-    private boolean isBestSeller;
+    private boolean bestSeller;
     private int soLuong;
-    private LoaiSanPham loai;
+    private ProductCategory loai;  // dùng ProductCategory
 
-    public SanPham(String maSanPham, String tenSanPham, double gia, boolean isBestSeller, int soLuong, LoaiSanPham loai) {
+    public SanPham(String maSanPham, String tenSanPham, double gia,
+                   boolean bestSeller, int soLuong, ProductCategory loai) {
         this.maSanPham = maSanPham;
         this.tenSanPham = tenSanPham;
         this.gia = gia;
-        this.isBestSeller = isBestSeller;
+        this.bestSeller = bestSeller;
         this.soLuong = soLuong;
         this.loai = loai;
     }
@@ -26,7 +28,6 @@ public class SanPham {
     public String getMaSanPham() {
         return maSanPham;
     }
-
 
     public String getTenSanPham() {
         return tenSanPham;
@@ -45,11 +46,11 @@ public class SanPham {
     }
 
     public boolean isBestSeller() {
-        return isBestSeller;
+        return bestSeller;
     }
 
     public void setBestSeller(boolean bestSeller) {
-        isBestSeller = bestSeller;
+        this.bestSeller = bestSeller;
     }
 
     public int getSoLuong() {
@@ -60,11 +61,11 @@ public class SanPham {
         this.soLuong = soLuong;
     }
 
-    public LoaiSanPham getLoai() {
+    public ProductCategory getLoai() {
         return loai;
     }
 
-    public void setLoai(LoaiSanPham loai) {
+    public void setLoai(ProductCategory loai) {
         this.loai = loai;
     }
 
@@ -72,6 +73,7 @@ public class SanPham {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         SanPham sanPham = (SanPham) o;
         return Objects.equals(maSanPham, sanPham.maSanPham);
     }
@@ -83,6 +85,8 @@ public class SanPham {
 
     @Override
     public String toString() {
-        return String.format("");
+        // Chỉ trả về tên sản phẩm; nếu cần bạn có thể hiển thị thêm loại:
+        // return tenSanPham + " (" + loai.getTenLoaiSanPham() + ")";
+        return tenSanPham;
     }
 }
