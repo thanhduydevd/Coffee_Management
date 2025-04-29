@@ -1,4 +1,6 @@
-package com.damcafe.app.entity;/*
+package com.damcafe.app.entity;
+
+/*
  * @description
  * @author: Pham Dang Khoa
  * @date: 4/29/2025
@@ -6,9 +8,9 @@ package com.damcafe.app.entity;/*
  */
 
 public enum Size {
-    M("Medium"),
-    L("Large"),
-    S("Small");
+    Medium("Medium"),
+    Large("Large"),
+    Small("Small");
 
     private String size;
 

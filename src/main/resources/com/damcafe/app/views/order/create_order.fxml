@@ -55,7 +55,7 @@
                               <TableColumn fx:id="colTenMon" prefWidth="75.0" text="Tên món" />
                               <TableColumn fx:id="colKichCo" prefWidth="50.0" text="Kích cỡ" />
                               <TableColumn fx:id="colSoLuong" prefWidth="60.0" text="Số lượng" />
-                              <TableColumn fx:id="colSoLuong1" prefWidth="60.0" text="Ghi chú" />
+                              <TableColumn fx:id="colGhiChu" prefWidth="60.0" text="Ghi chú" />
                               <TableColumn fx:id="colDonGia" prefWidth="75.0" text="Đơn giá" />
                               <TableColumn fx:id="colThanhTien" prefWidth="75.0" text="Thành tiền" />
                            </columns>
@@ -290,7 +290,7 @@
                                                          <children>
                                                             <ImageView fitHeight="100.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
                                                                <image>
-                                                                  <Image url="@../../images/products/pd1.png" />
+                                                                  <Image url="@../../images/products/coffee/americano.png" />
                                                                </image>
                                                             </ImageView>
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Hồng Trà Latte Nguyên Vị" textAlignment="CENTER" wrappingWidth="100.0" />
@@ -301,7 +301,7 @@
                                                          <children>
                                                             <ImageView fitHeight="100.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
                                                                <image>
-                                                                  <Image url="@../../images/products/pd2.png" />
+                                                                  <Image url="@../../images/products/milk_tea/tra_sua_dau_tay.jpg" />
                                                                </image>
                                                             </ImageView>
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Hồng Trà Latte Mây" textAlignment="CENTER" wrappingWidth="100.0" />
