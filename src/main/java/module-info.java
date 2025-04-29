@@ -14,4 +14,5 @@ module com.damcafe.app {
 
     exports com.damcafe.app.gui;
     opens com.damcafe.app.gui to javafx.fxml;
+    exports com.damcafe.app.entity;
 }
