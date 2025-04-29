@@ -1,0 +1,12 @@
+/* Stylesheet Cho Dialog */
+.dialog-pane .button {
+    -fx-padding: 6 16;
+    -fx-font-weight: bold;
+    -fx-background-color: #8B5A2B;
+    -fx-text-fill: white;
+}
+
+.dialog-pane .button:cancel {
+    -fx-background-color: #f5f3f2;
+    -fx-text-fill: #8B5A2B;
+}
