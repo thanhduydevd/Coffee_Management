@@ -2,7 +2,7 @@ package com.damcafe.app.controller;
 
 import com.damcafe.app.entity.Product;
 import com.damcafe.app.entity.ProductCategory;
-import dao.ProductCategory_DAO;
+import com.damcafe.app.dao.ProductCategory_DAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

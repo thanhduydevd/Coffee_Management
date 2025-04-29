@@ -5,6 +5,7 @@ module com.damcafe.app {
     requires javafx.graphics;
     requires java.desktop;
     requires java.sql;
+    requires javafx.controls;
 
     exports com.damcafe.app.controller;
     opens com.damcafe.app.controller to javafx.fxml;

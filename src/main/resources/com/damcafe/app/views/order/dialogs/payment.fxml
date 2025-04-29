@@ -40,12 +40,12 @@
                   <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <TextField prefHeight="35.0" promptText="Nhập số tiền khách đưa" style="-fx-background-color: #f5f3f2; -fx-border-color: transparent transparent transparent  #8B5A2B; -fx-border-width: 5px;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <TextField fx:id="khachDua" prefHeight="35.0" promptText="Nhập số tiền khách đưa" style="-fx-background-color: #f5f3f2; -fx-border-color: transparent transparent transparent  #8B5A2B; -fx-border-width: 5px;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label text="Tổng tiền phải trả:">
                      <font>
                         <Font size="15.0" />
                      </font></Label>
-                  <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="55,000đ" GridPane.columnIndex="1">
+                  <Text fx:id="thanhTien" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="55,000đ" GridPane.columnIndex="1">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
@@ -60,7 +60,7 @@
                         <Font size="15.0" />
                      </font>
                   </Label>
-                  <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="30,000đ" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <Text fx:id="tienThua" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="0đ" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
