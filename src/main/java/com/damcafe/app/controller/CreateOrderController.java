@@ -1,6 +1,6 @@
 package com.damcafe.app.controller;
 
-import com.damcafe.app.dao.CreateOrder_DAO;
+import com.damcafe.app.dao.Product_DAO;
 import com.damcafe.app.entity.OrderDetail;
 import com.damcafe.app.entity.Product;
 import com.damcafe.app.entity.Size;
@@ -8,7 +8,6 @@ import com.damcafe.app.gui.ShowDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -20,8 +19,6 @@ import javafx.scene.text.TextAlignment;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class CreateOrderController {
     @FXML
@@ -47,7 +44,7 @@ public class CreateOrderController {
 
     @FXML
     private FlowPane mon;
-    public static int hashOrderDetail = CreateOrder_DAO.getMaxHash();
+    public static int hashOrderDetail = Product_DAO.getMaxHash();
     private ArrayList<Product> productList;
 
     public void initialize(){
@@ -66,49 +63,46 @@ public class CreateOrderController {
 
         // Thiết lập các cột của TableView
         colSTT.setCellValueFactory(new PropertyValueFactory<>("stt"));
-        colTenMon.setCellValueFactory(new PropertyValueFactory<>("tenMon"));
-        colKichCo.setCellValueFactory(new PropertyValueFactory<>("kichCo"));
-        colSoLuong.setCellValueFactory(new PropertyValueFactory<>("soLuong"));
-        colGhiChu.setCellValueFactory(new PropertyValueFactory<>("ghiChu"));
-        colDonGia.setCellValueFactory(new PropertyValueFactory<>("donGia"));
-        colThanhTien.setCellValueFactory(new PropertyValueFactory<>("thanhTien"));
+        colTenMon.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colKichCo.setCellValueFactory(new PropertyValueFactory<>("size"));
+        colSoLuong.setCellValueFactory(new PropertyValueFactory<>("quatity"));
+        colGhiChu.setCellValueFactory(new PropertyValueFactory<>("comment"));
+        colDonGia.setCellValueFactory(new PropertyValueFactory<>("price"));
+        colThanhTien.setCellValueFactory(new PropertyValueFactory<>("total"));
 
         // Tạo một danh sách các OrderDetail và thêm vào TableView
         ObservableList<OrderDetail> orderDetails = FXCollections.observableArrayList();
         tableDonHang.setItems(orderDetails);
-        mon.setOnMouseClicked(e -> {
-            System.out.println(xuLiChuoiTB(e.getTarget().toString()));
-//            addProductToOrder(clickedProduct);
-        });
+
     }
 
-//    private void addProductToOrder(Product product) {
-//
-//        ObservableList<OrderDetail> currentList = table.getItems();
-//
-//        for (OrderDetail od : currentList) {
-//            if (od.getName().equals(product.getTenSanPham()) && od.getSize() == cbbSize.getValue()) {
-//                od.setQuatity(od.getQuatity() + 1);
-//                table.refresh();
-//                return;
-//            }
-//        }
-//
-//        OrderDetail orderDetail = new OrderDetail(
-//                getHashOrderDetail(),
-//                currentList.size() + 1,
-//                product.getTenSanPham(),
-//                cbbSize.getValue(),
-//                1,
-//                "",
-//                product.getGiaGoc()
-//        );
-//        currentList.add(orderDetail);
-//    }
+    private void addProductToOrder(Product product) {
+
+        ObservableList<OrderDetail> currentList = tableDonHang.getItems();
+
+        for (OrderDetail od : currentList) {
+            if (od.getName().equals(product.getTenSanPham()) && od.getSize() == cbbSize.getValue()) {
+                od.setQuatity(od.getQuatity() + 1);
+                tableDonHang.refresh();
+                return;
+            }
+        }
+
+        OrderDetail orderDetail = new OrderDetail(
+                getHashOrderDetail(),
+                currentList.size() + 1,
+                product.getTenSanPham(),
+                cbbSize.getValue(),
+                1,
+                "",
+                product.getGiaGoc()
+        );
+        currentList.add(orderDetail);
+    }
 
 
     private ArrayList<Product> loadProductsToPane() {
-        ArrayList<Product> danhSach = CreateOrder_DAO.loadProductFromDB();
+        ArrayList<Product> danhSach = Product_DAO.loadProductFromDB();
         for (Product p : danhSach) {
             addProductToPane(p);
         }
@@ -133,6 +127,7 @@ public class CreateOrderController {
         if (imgPath != null && !imgPath.isBlank()) {
             try {
                 ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream(imgPath)));
+                imageView.setId(product.getMaSanPham());
                 imageView.setFitHeight(100);
                 imageView.setFitWidth(70);
                 imageView.setPreserveRatio(true);
@@ -149,6 +144,8 @@ public class CreateOrderController {
         // Click để thêm vào đơn hàng
         box.setOnMouseClicked(e -> {
             System.out.println("Clicked on: " + product.getTenSanPham());
+            openDialog("dieuchinhsoluong");
+            addProductToOrder(product);
             // openDialog("chitietdonhang");
         });
 
@@ -156,32 +153,14 @@ public class CreateOrderController {
 
     }
 
-
-
-
     public void openDialog(String chucNang) {
         ShowDialog dialog = new ShowDialog(chucNang);
         dialog.showAndWait();
     }
 
-
-//    public OrderDetail createOrderDetail(){
-//        DecimalFormat deFomat = new DecimalFormat("000");
-//        String cthd = String.format("CTHD%s",deFomat.format(hashOrderDetail++));
-//        OrderDetail e = new OrderDetail();
-//        return e;
-//    }
     private String getHashOrderDetail(){
         DecimalFormat deFomat = new DecimalFormat("000");
         return String.format("CTHD%s",deFomat.format(hashOrderDetail++));
     }
 
-    private String xuLiChuoiTB(String chuoi){
-        Pattern pattern = Pattern.compile("text=\"(.*)\"");
-        Matcher matcher = pattern.matcher(chuoi);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return "";
-    }
 }
