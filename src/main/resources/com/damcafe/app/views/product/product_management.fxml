@@ -109,12 +109,12 @@
                                     <FontAwesomeIcon fill="WHITE" glyphName="PLUS" />
                                  </graphic>
                               </Button>
-                              <Button id="button_update" fx:id="btn_update" mnemonicParsing="false" style="-fx-background-color: #8B5A2B; -fx-text-fill: white;" text="Cập nhật">
+                              <Button id="button_update" fx:id="button_update" mnemonicParsing="false" style="-fx-background-color: #8B5A2B; -fx-text-fill: white;" text="Cập nhật">
                                  <graphic>
                                     <FontAwesomeIcon fill="WHITE" glyphName="EDIT" />
                                  </graphic>
                               </Button>
-                              <Button id="button_delete" fx:id="btn_delete" mnemonicParsing="false" style="-fx-background-color: #8B5A2B; -fx-text-fill: white;" text="Xoá">
+                              <Button id="button_delete" fx:id="button_delete" mnemonicParsing="false" style="-fx-background-color: #8B5A2B; -fx-text-fill: white;" text="Xoá">
                                  <graphic>
                                     <FontAwesomeIcon fill="WHITE" glyphName="TRASH" />
                                  </graphic>
