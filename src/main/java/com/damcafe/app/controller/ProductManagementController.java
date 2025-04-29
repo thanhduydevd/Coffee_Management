@@ -2,7 +2,7 @@ package com.damcafe.app.controller;
 
 import com.damcafe.app.entity.Product;
 import com.damcafe.app.entity.ProductCategory;
-import dao.ProductCategory_DAO;
+import com.damcafe.app.dao.ProductCategory_DAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -44,15 +44,13 @@ public class ProductManagementController {
     @FXML private Label message;
     @FXML private TextField product_search_name;
 
-    private ProductCategory_DAO productCategoryDAO;
     private String selectedAbsolutePath;
     private String selectedRelativeName;
     private ObservableList<Product> productList = FXCollections.observableArrayList();
 
     public void initialize() {
         // Khởi tạo DAO và load danh sách loại sản phẩm
-        productCategoryDAO = new ProductCategory_DAO();
-        List<ProductCategory> categories = productCategoryDAO.getAllProductCategories();
+        List<ProductCategory> categories = ProductCategory_DAO.getAllProductCategories();
         product_category.getItems().setAll(categories);
         product_search_category.getItems().setAll(categories);
 

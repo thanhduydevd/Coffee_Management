@@ -156,7 +156,7 @@
                   </HBox>
                   <HBox alignment="CENTER">
                      <children>
-                        <Button mnemonicParsing="false" prefHeight="50.0" style="-fx-background-color: white;" text="Đăng xuất">
+                        <Button fx:id="close_btn" mnemonicParsing="false" prefHeight="50.0" style="-fx-background-color: white;" text="Đăng xuất">
                            <graphic>
                               <FontAwesomeIcon glyphName="SIGN_OUT" />
                            </graphic>

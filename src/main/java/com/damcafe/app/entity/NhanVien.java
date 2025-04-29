@@ -8,6 +8,7 @@ public class NhanVien {
     private String tenNhanVien;
     private String diaChi;
     private String sdt;
+    private String email;
     private LocalDate ngayVaoLam;
     private double luong;
 
@@ -15,14 +16,19 @@ public class NhanVien {
         this.maNhanVien = maNhanVien;
     }
 
-    public NhanVien(String maNhanVien, String tenNhanVien, String diaChi, String sdt, LocalDate ngayVaoLam, double luong) {
+    public NhanVien(String maNhanVien, String tenNhanVien, String diaChi, String sdt, LocalDate ngayVaoLam, double luong,String email) {
         this.maNhanVien = maNhanVien;
         this.tenNhanVien = tenNhanVien;
         this.diaChi = diaChi;
         this.sdt = sdt;
         this.ngayVaoLam = ngayVaoLam;
         this.luong = luong;
+        this.email = email;
     }
+
+    public String getEmail() {return email;}
+
+    public void setEmail(String email) { this.email = email; }
 
     public String getMaNhanVien() {
         return maNhanVien;
