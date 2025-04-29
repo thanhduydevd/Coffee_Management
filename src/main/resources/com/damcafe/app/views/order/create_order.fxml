@@ -147,15 +147,14 @@
                                     <Font name="System Bold" size="15.0" />
                                  </font>
                               </Label>
-                              <Label text="Bàn 1 - Tầng Trệt" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <Label fx:id="viTri" text="Bàn 1 - Tầng Trệt" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
                               </Label>
                               <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="1">
                                  <children>
-                                    <RadioButton mnemonicParsing="false" text="Sử dụng tại chỗ" />
-                                    <RadioButton mnemonicParsing="false" text="Mua mang về" />
+                                    <RadioButton fx:id="isHere" mnemonicParsing="false" text="Sử dụng tại chỗ" />
                                  </children>
                               </HBox>
                               <Label text="Mã khuyến mãi" GridPane.rowIndex="4">
@@ -284,7 +283,7 @@
                                                       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                                    </padding>
                                                 </GridPane>
-                                                <FlowPane hgap="10.0" vgap="10.0" VBox.vgrow="ALWAYS">
+                                                <FlowPane fx:id="mon" hgap="10.0" vgap="10.0" VBox.vgrow="ALWAYS">
                                                    <children>
                                                       <VBox styleClass="box-sanpham" stylesheets="@../../styles/dashboard_style.css">
                                                          <children>

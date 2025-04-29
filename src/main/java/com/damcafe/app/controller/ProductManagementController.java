@@ -169,7 +169,7 @@ public class ProductManagementController {
             return;
         }
         int price = Integer.parseInt(priceS);
-        Product p = new Product(id, name, cat, "All", price, desc, selectedRelativeName, 1);
+        Product p = new Product(id, name, cat, null, price, desc, selectedRelativeName, 1);
         productList.add(p);
         // TODO: gọi DAO lưu vào CSDL: ps.setString(..., selectedRelativeName)
         message.setText("Thêm thành công!");
@@ -268,9 +268,9 @@ public class ProductManagementController {
         } else if (selectedSort.equals("Tên Z → A")) {
             sortedList.sort((p1, p2) -> p2.getTenSanPham().compareTo(p1.getTenSanPham()));
         } else if (selectedSort.equals("Giá thấp → cao")) {
-            sortedList.sort((p1, p2) -> Integer.compare(p1.getGiaGoc(), p2.getGiaGoc()));
+            sortedList.sort((p1, p2) -> Double.compare(p1.getGiaGoc(), p2.getGiaGoc()));
         } else if (selectedSort.equals("Giá cao → thấp")) {
-            sortedList.sort((p1, p2) -> Integer.compare(p2.getGiaGoc(), p1.getGiaGoc()));
+            sortedList.sort((p1, p2) -> Double.compare(p2.getGiaGoc(), p1.getGiaGoc()));
         }
         productTable.setItems(FXCollections.observableArrayList(sortedList));
     }

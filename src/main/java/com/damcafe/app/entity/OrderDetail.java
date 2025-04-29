@@ -31,7 +31,7 @@ public class OrderDetail {
 
     public OrderDetail(String detailID) {
         this.detailID = detailID;
-        size = Size.Small;
+        size = Size.S;
         total = getTotal();
     }
 

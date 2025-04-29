@@ -18,13 +18,13 @@ public class Product {
     private String maSanPham;
     private String tenSanPham;
     private ProductCategory loaiSanPham;
-    private String kichThuoc;
-    private int giaGoc;
+    private Size kichThuoc;
+    private double giaGoc;
     private String moTa;       // Có thể null
     private String hinhAnh;    // Có thể null
     private int trangThai;
 
-    public Product(String maSanPham, String tenSanPham, ProductCategory loaiSanPham, String kichThuoc, int giaGoc, String moTa, String hinhAnh, int trangThai) {
+    public Product(String maSanPham, String tenSanPham, ProductCategory loaiSanPham, Size kichThuoc, double giaGoc, String moTa, String hinhAnh, int trangThai) {
         this.maSanPham = maSanPham;
         this.tenSanPham = tenSanPham;
         this.loaiSanPham = loaiSanPham;
@@ -59,15 +59,15 @@ public class Product {
         this.loaiSanPham = loaiSanPham;
     }
 
-    public String getKichThuoc() {
+    public Size getKichThuoc() {
         return kichThuoc;
     }
 
-    public void setKichThuoc(String kichThuoc) {
+    public void setKichThuoc(Size kichThuoc) {
         this.kichThuoc = kichThuoc;
     }
 
-    public int getGiaGoc() {
+    public double getGiaGoc() {
         return giaGoc;
     }
 
@@ -114,16 +114,8 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product{" +
-                "maSanPham='" + maSanPham + '\'' +
-                ", tenSanPham='" + tenSanPham + '\'' +
-                ", loaiSanPham=" + loaiSanPham +
-                ", kichThuoc='" + kichThuoc + '\'' +
-                ", giaGoc=" + giaGoc +
-                ", moTa='" + moTa + '\'' +
-                ", hinhAnh='" + hinhAnh + '\'' +
-                ", trangThai=" + trangThai +
-                '}';
+        return String.format("%s %s %s %s %s %s %s %s",maSanPham,tenSanPham,loaiSanPham,kichThuoc
+                ,giaGoc,moTa,hinhAnh,trangThai);
     }
 }
 

@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * @version: 1.0
  */
 public class ProductCategory_DAO {
-    public ArrayList<ProductCategory> getAllProductCategories() {
+    public static ArrayList<ProductCategory> getAllProductCategories() {
         ArrayList<ProductCategory> productCategories = new ArrayList<>();
         String sql = "SELECT * FROM LoaiSanPham";
         try {
