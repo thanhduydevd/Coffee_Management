@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
@@ -19,30 +20,18 @@ import java.util.List;
 
 public class ProductManagementController {
 
-    @FXML
-    private ComboBox<ProductCategory> product_category;
-    @FXML
-    private ComboBox<ProductCategory> product_search_category;
-    @FXML
-    private ComboBox<String> product_search_sort;
-    @FXML
-    private TextField product_id;
-    @FXML
-    private TextField product_name;
-    @FXML
-    private TextField product_price;
-    @FXML
-    private TextArea product_describe;
-    @FXML
-    private Button product_image;
-    @FXML
-    private Button button_add;
-    @FXML
-    private Button button_update;
-    @FXML
-    private Button button_delete;
-    @FXML
-    private TableView<Product> productTable;
+    @FXML private ComboBox<ProductCategory> product_category;
+    @FXML private ComboBox<ProductCategory> product_search_category;
+    @FXML private ComboBox<String> product_search_sort;
+    @FXML private TextField product_id;
+    @FXML private TextField product_name;
+    @FXML private TextField product_price;
+    @FXML private TextArea product_describe;
+    @FXML private Button product_image;
+    @FXML private Button button_add;
+    @FXML private Button button_update;
+    @FXML private Button button_delete;
+    @FXML private TableView<Product> productTable;
 
     @FXML private TableColumn<Product, String> colMaSanPham;
     @FXML private TableColumn<Product, String> colTenSanPham;
@@ -52,57 +41,34 @@ public class ProductManagementController {
     @FXML private TableColumn<Product, String> colMoTa;
     @FXML private TableColumn<Product, String> colHinhAnh;
     @FXML private TableColumn<Product, Integer> colTrangThai;
-    @FXML
-    private Label message;
-    @FXML
-    private ImageView productImageView;
+    @FXML private Label message;
+    @FXML private TextField product_search_name;
 
     private ProductCategory_DAO productCategoryDAO;
-    private String selectedImagePath = null;
-    ObservableList<Product> productList = FXCollections.observableArrayList();
+    private String selectedAbsolutePath;
+    private String selectedRelativeName;
+    private ObservableList<Product> productList = FXCollections.observableArrayList();
 
     public void initialize() {
-        // Khởi tạo DAO
+        // Khởi tạo DAO và load danh sách loại sản phẩm
         productCategoryDAO = new ProductCategory_DAO();
+        List<ProductCategory> categories = productCategoryDAO.getAllProductCategories();
+        product_category.getItems().setAll(categories);
+        product_search_category.getItems().setAll(categories);
 
-        // Load danh sách loại sản phẩm
-        List<ProductCategory> productCategories = productCategoryDAO.getAllProductCategories();
-        product_category.getItems().setAll(productCategories);
-        product_search_category.getItems().setAll(productCategories);
+        // Hiển thị tên loại sản phẩm trong ComboBox
+        StringConverter<ProductCategory> conv = new StringConverter<>() {
+            @Override public String toString(ProductCategory c) { return c == null ? "" : c.getTenLoaiSanPham(); }
+            @Override public ProductCategory fromString(String s) { return null; }
+        };
+        product_category.setConverter(conv);
+        product_search_category.setConverter(conv);
 
-        // Cài đặt hiển thị ComboBox loại sản phẩm
-        product_category.setConverter(new StringConverter<ProductCategory>() {
-            @Override
-            public String toString(ProductCategory category) {
-                return category == null ? "" : category.getTenLoaiSanPham();
-            }
-            @Override
-            public ProductCategory fromString(String string) {
-                return null;
-            }
-        });
-        product_search_category.setConverter(new StringConverter<ProductCategory>() {
-            @Override
-            public String toString(ProductCategory category) {
-                return category == null ? "" : category.getTenLoaiSanPham();
-            }
-            @Override
-            public ProductCategory fromString(String string) {
-                return null;
-            }
-        });
-
-        // Thêm các lựa chọn sắp xếp
-        product_search_sort.getItems().addAll(
-                "Mặc định",
-                "Tên A → Z",
-                "Tên Z → A",
-                "Giá thấp → cao",
-                "Giá cao → thấp"
-        );
+        // Cài đặt lựa chọn sắp xếp
+        product_search_sort.getItems().addAll("Mặc định", "Tên A → Z", "Tên Z → A", "Giá thấp → cao", "Giá cao → thấp");
         product_search_sort.getSelectionModel().selectFirst();
 
-        // Thiết lập ánh xạ giữa cột và thuộc tính trong Product
+        // Ánh xạ cột với thuộc tính Product
         colMaSanPham.setCellValueFactory(new PropertyValueFactory<>("maSanPham"));
         colTenSanPham.setCellValueFactory(new PropertyValueFactory<>("tenSanPham"));
         colLoaiSanPham.setCellValueFactory(new PropertyValueFactory<>("loaiSanPham"));
@@ -110,125 +76,210 @@ public class ProductManagementController {
         colGiaGoc.setCellValueFactory(new PropertyValueFactory<>("giaGoc"));
         colMoTa.setCellValueFactory(new PropertyValueFactory<>("moTa"));
         colHinhAnh.setCellValueFactory(new PropertyValueFactory<>("hinhAnh"));
-        colHinhAnh.setCellFactory(column -> {
-            return new TableCell<Product, String>() {
-                private final ImageView imageView = new ImageView();
-
-                {
-                    imageView.setFitHeight(50);  // Kích thước ảnh hiển thị
-                    imageView.setFitWidth(50);
-                    imageView.setPreserveRatio(true);
-                    setAlignment(Pos.CENTER);
-                }
-
-                @Override
-                protected void updateItem(String imagePath, boolean empty) {
-                    super.updateItem(imagePath, empty);
-
-                    if (empty || imagePath == null || imagePath.isBlank()) {
-                        setGraphic(null);
-                    } else {
-                        try {
-                            javafx.scene.image.Image image = new javafx.scene.image.Image("file:" + imagePath, 100, 100, true, true);
-                            imageView.setImage(image);
-                            setGraphic(imageView);
-                        } catch (Exception e) {
-                            setGraphic(null);
-                        }
-                    }
-                }
-            };
-        });
-
         colTrangThai.setCellValueFactory(new PropertyValueFactory<>("trangThai"));
 
+        // Hiển thị hình ảnh từ resource
+        colHinhAnh.setCellFactory(column -> new TableCell<>() {
+            private final ImageView iv = new ImageView();
+            {
+                iv.setFitHeight(50);
+                iv.setFitWidth(50);
+                iv.setPreserveRatio(true);
+                setAlignment(Pos.CENTER);
+            }
+            @Override protected void updateItem(String fileName, boolean empty) {
+                super.updateItem(fileName, empty);
+                if (empty || fileName == null || fileName.isBlank()) {
+                    setGraphic(null);
+                } else {
+                    try {
+                        Image img = new Image(getClass().getResource(
+                                "/com/damcafe/app/images/products/" + fileName
+                        ).toExternalForm());
+                        iv.setImage(img);
+                        setGraphic(iv);
+                    } catch (Exception e) {
+                        setGraphic(null);
+                        System.err.println("Lỗi load ảnh: " + fileName);
+                    }
+                }
+            }
+        });
 
         productTable.setItems(productList);
 
-        // Xử lý chọn ảnh sản phẩm
-        product_image.setOnAction(event -> chooseImage());
+        // Xử lý sự kiện
+        product_image.setOnAction(e -> chooseImage());
+        button_add.setOnAction(e -> addProduct());
+        button_delete.setOnAction(e -> deleteProduct());
+        button_update.setOnAction(e -> updateProduct());
+        product_search_name.setOnKeyReleased(e -> searchProductByName());
+        product_search_category.setOnAction(e -> searchProductByCategory());
+        product_search_sort.setOnAction(e -> searchProductBySort());
 
-        // Xử lý nút thêm sản phẩm
-        button_add.setOnAction(event -> addProduct());
+        productTable.setOnMouseClicked(e -> {
+            Product p = productTable.getSelectionModel().getSelectedItem();
+            if (p != null) {
+                product_id.setText(p.getMaSanPham());
+                product_name.setText(p.getTenSanPham());
+                product_price.setText(String.valueOf(p.getGiaGoc()));
+                product_describe.setText(p.getMoTa());
+                product_category.setValue(p.getLoaiSanPham());
+                selectedRelativeName = p.getHinhAnh();
+                product_image.setText(selectedRelativeName);
+                product_id.setEditable(false);
+            }
+        });
     }
 
-    public static String getRelativeImagePath(String absolutePath) {
-        File file = new File(absolutePath);
-        String fileName = file.getName();
-
-        String relativePath = "../../images/products/coffee/" + fileName;
-
-        return relativePath;
+    /** Trả về tên file để lưu vào CSDL và load lại từ resource */
+    private String getRelativeImageName(String absolutePath) {
+        return new File(absolutePath).getName();
     }
 
     private void chooseImage() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Chọn ảnh sản phẩm");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.avif")
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Chọn ảnh sản phẩm");
+        chooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
         );
-
-        java.io.File selectedFile = fileChooser.showOpenDialog(product_image.getScene().getWindow());
-        if (selectedFile != null) {
-            selectedImagePath = selectedFile.getAbsolutePath();
-            String relativePath = getRelativeImagePath(selectedImagePath);
-            product_image.setText(relativePath);
-
-            // In ra đường dẫn tương đối (hoặc làm gì đó với nó)
-            System.out.println("Relative Path: " + relativePath);
+        File file = chooser.showOpenDialog(product_image.getScene().getWindow());
+        if (file != null) {
+            selectedAbsolutePath = file.getAbsolutePath();
+            selectedRelativeName = getRelativeImageName(selectedAbsolutePath);
+            product_image.setText(selectedRelativeName);
+            System.out.println("Chọn ảnh: " + selectedRelativeName);
         }
     }
 
     private void addProduct() {
-        String id = product_id.getText().trim();
-        String name = product_name.getText().trim();
-        String priceStr = product_price.getText().trim();
-        String description = product_describe.getText().trim();
-        ProductCategory category = product_category.getValue();
-
-        if (id.isEmpty() || name.isEmpty() || priceStr.isEmpty() || category == null || selectedImagePath == null) {
-            message.setText("Vui lòng điền đầy đủ thông tin sản phẩm!");
+        String id     = product_id.getText().trim();
+        String name   = product_name.getText().trim();
+        String priceS = product_price.getText().trim();
+        String desc   = product_describe.getText().trim();
+        ProductCategory cat = product_category.getValue();
+        if (id.isEmpty() || name.isEmpty() || cat == null || desc.isEmpty() || selectedRelativeName == null) {
+            message.setText("Vui lòng điền đầy đủ thông tin!");
             message.setStyle("-fx-text-fill: red;");
             return;
         }
-
-        if (!priceStr.matches("\\d+")) {
-            message.setText("Giá sản phẩm phải là số nguyên dương!");
+        if (!priceS.matches("\\d+")) {
+            message.setText("Giá phải là số nguyên dương!");
             message.setStyle("-fx-text-fill: red;");
             return;
         }
-
-        int price = Integer.parseInt(priceStr);
-        if (price <= 0) {
-            message.setText("Giá sản phẩm phải lớn hơn 0!");
-            message.setStyle("-fx-text-fill: red;");
-            return;
-        }
-
-        System.out.println("ID: " + id);
-        System.out.println("Name: " + name);
-        System.out.println("Price: " + priceStr);
-        System.out.println("Description: " + description);
-        System.out.println("Category: " + category);
-        System.out.println("Image Path: " + selectedImagePath);
-
-        productList.add(new Product(id, name, category, "All", price, description, selectedImagePath, 1));
-
-        message.setText("Thêm sản phẩm thành công!");
+        int price = Integer.parseInt(priceS);
+        Product p = new Product(id, name, cat, "All", price, desc, selectedRelativeName, 1);
+        productList.add(p);
+        // TODO: gọi DAO lưu vào CSDL: ps.setString(..., selectedRelativeName)
+        message.setText("Thêm thành công!");
         message.setStyle("-fx-text-fill: green;");
-
-        // Clear the form
         clearForm();
     }
 
-    private void clearForm() {
-        product_id.clear();
-        product_name.clear();
-        product_price.clear();
-        product_describe.clear();
-        product_category.getSelectionModel().clearSelection();
-        selectedImagePath = null;
-        product_image.setText("Chọn ảnh sản phẩm");
+    private void deleteProduct() {
+        Product sel = productTable.getSelectionModel().getSelectedItem();
+        if (sel == null) {
+            message.setText("Chưa chọn sản phẩm!");
+            message.setStyle("-fx-text-fill: red;");
+            return;
+        }
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION,
+                "Xóa sản phẩm " + sel.getTenSanPham() + "?",
+                ButtonType.OK, ButtonType.CANCEL
+        );
+        if (a.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            productList.remove(sel);
+            message.setText("Xóa thành công!");
+            message.setStyle("-fx-text-fill: green;");
+        }
+        clearForm();
     }
 
+    private void updateProduct() {
+        Product sel = productTable.getSelectionModel().getSelectedItem();
+        if (sel == null) {
+            message.setText("Chưa chọn sản phẩm!");
+            message.setStyle("-fx-text-fill: red;");
+            return;
+        }
+        String name   = product_name.getText().trim();
+        String priceS = product_price.getText().trim();
+        String desc   = product_describe.getText().trim();
+        ProductCategory cat = product_category.getValue();
+        if (name.isEmpty() || priceS.isEmpty() || cat == null) {
+            message.setText("Vui lòng điền đầy đủ thông tin!");
+            message.setStyle("-fx-text-fill: red;");
+            return;
+        }
+        if (!priceS.matches("\\d+")) {
+            message.setText("Giá phải là số nguyên dương!");
+            message.setStyle("-fx-text-fill: red;");
+            return;
+        }
+        sel.setTenSanPham(name);
+        sel.setGiaGoc(Integer.parseInt(priceS));
+        sel.setMoTa(desc);
+        sel.setLoaiSanPham(cat);
+        productTable.refresh();
+        message.setText("Cập nhật thành công!");
+        message.setStyle("-fx-text-fill: green;");
+    }
+
+    private void searchProductByName() {
+        String searchText = product_search_name.getText().trim();
+        if (searchText.isEmpty()) {
+            productTable.setItems(productList);
+            return;
+        }
+        List<Product> filteredList = new ArrayList<>();
+        for (Product p : productList) {
+            if (p.getTenSanPham().toLowerCase().contains(searchText.toLowerCase())) {
+                filteredList.add(p);
+            }
+        }
+        productTable.setItems(FXCollections.observableArrayList(filteredList));
+    }
+
+    private void searchProductByCategory() {
+        ProductCategory selectedCategory = product_search_category.getValue();
+        if (selectedCategory == null) {
+            productTable.setItems(productList);
+            return;
+        }
+        List<Product> filteredList = new ArrayList<>();
+        for (Product p : productList) {
+            if (p.getLoaiSanPham().equals(selectedCategory)) {
+                filteredList.add(p);
+            }
+        }
+        productTable.setItems(FXCollections.observableArrayList(filteredList));
+    }
+
+    private void searchProductBySort() {
+        String selectedSort = product_search_sort.getValue();
+        if (selectedSort.equals("Mặc định")) {
+            productTable.setItems(productList);
+            return;
+        }
+        List<Product> sortedList = new ArrayList<>(productList);
+        if (selectedSort.equals("Tên A → Z")) {
+            sortedList.sort((p1, p2) -> p1.getTenSanPham().compareTo(p2.getTenSanPham()));
+        } else if (selectedSort.equals("Tên Z → A")) {
+            sortedList.sort((p1, p2) -> p2.getTenSanPham().compareTo(p1.getTenSanPham()));
+        } else if (selectedSort.equals("Giá thấp → cao")) {
+            sortedList.sort((p1, p2) -> Integer.compare(p1.getGiaGoc(), p2.getGiaGoc()));
+        } else if (selectedSort.equals("Giá cao → thấp")) {
+            sortedList.sort((p1, p2) -> Integer.compare(p2.getGiaGoc(), p1.getGiaGoc()));
+        }
+        productTable.setItems(FXCollections.observableArrayList(sortedList));
+    }
+
+    private void clearForm() {
+        product_id.clear(); product_name.clear(); product_price.clear(); product_describe.clear();
+        product_category.getSelectionModel().clearSelection();
+        selectedAbsolutePath = null; selectedRelativeName = null;
+        product_image.setText("Chọn ảnh sản phẩm");
+        product_id.setEditable(true);
+    }
 }
