@@ -161,7 +161,7 @@ public class CreateOrderController {
         ObservableList<OrderDetail> currentList = tableDonHang.getItems();
 
         for (OrderDetail od : currentList) {
-            if (od.getName().equals(product.getTenSanPham()) && od.getSize() == cbbSize.getValue()) {
+            if (od.getProductID().equals(product.getMaSanPham()) && od.getSize() == cbbSize.getValue()) {
                 od.setQuatity(od.getQuatity() + 1);
                 tableDonHang.refresh();
                 return;
@@ -170,8 +170,6 @@ public class CreateOrderController {
 
         OrderDetail orderDetail = new OrderDetail(
                 getHashOrderDetail(),
-                currentList.size() + 1,
-                product.getTenSanPham(),
                 cbbSize.getValue(),
                 i,
                 mess,

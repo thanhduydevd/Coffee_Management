@@ -82,10 +82,10 @@
                      <columns>
                         <TableColumn fx:id="colSTT1" prefWidth="50.0" text="STT" />
                         <TableColumn fx:id="colTenMon1" prefWidth="75.0" text="Mã hoá đơn" />
-                        <TableColumn fx:id="colKichCo1" prefWidth="50.0" text="Ngày lập" />
-                        <TableColumn fx:id="colSoLuong1" prefWidth="60.0" text="Nhân Viên" />
-                        <TableColumn fx:id="colDonGia1" prefWidth="75.0" text="Hình thức" />
-                        <TableColumn fx:id="colDonGia11" prefWidth="75.0" text="Ghi chú" />
+                        <TableColumn fx:id="colDate" prefWidth="50.0" text="Ngày lập" />
+                        <TableColumn fx:id="colNhanVIen" prefWidth="60.0" text="Nhân Viên" />
+                        <TableColumn fx:id="colHinhThuc" prefWidth="75.0" text="Hình thức" />
+                        <TableColumn fx:id="colGhiChu" prefWidth="75.0" text="Ghi chú" />
                         <TableColumn fx:id="colThanhTien1" prefWidth="75.0" text="Tổng tiền" />
                      </columns>
                      <columnResizePolicy>

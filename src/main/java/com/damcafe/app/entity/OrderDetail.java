@@ -12,20 +12,16 @@ public class OrderDetail {
     private final String detailID;
     private String orderID;
     private String productID;
-    private int stt;
-    private String name;
     private Size size;
     private int quatity;
     private double price;
     private double total;
     private String comment;
 
-    public OrderDetail(String detailID, String orderID, String productID,int stt,String name, Size size, int quatity, double price, String comment) {
+    public OrderDetail(String detailID, String orderID, String productID,Size size, int quatity, double price, String comment) {
         this.detailID = detailID;
         this.orderID = orderID;
         this.productID = productID;
-        this.stt = stt;
-        this.name = name;
         this.size = size;
         this.quatity = quatity;
         this.price = price;
@@ -33,31 +29,13 @@ public class OrderDetail {
         this.comment = comment;
     }
 
-    public OrderDetail(String id,int i, String tenSanPham, Size value, int i1, String s, double giaGoc) {
+    public OrderDetail(String id, Size value, int i1, String s, double giaGoc) {
         detailID = id;
-        stt = i;
-        name = tenSanPham;
         size = value;
         quatity = i1;
         comment = s;
         price = giaGoc;
         total = getTotal();
-    }
-
-    public int getStt() {
-        return stt;
-    }
-
-    public void setStt(int stt) {
-        this.stt = stt;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public OrderDetail(String detailID) {
@@ -137,6 +115,6 @@ public class OrderDetail {
 
     @Override
     public String toString() {
-        return String.format("%s %s %s %s %s %s %s %s %s %s",detailID,orderID,productID,stt, name,size,quatity,price,total,comment);
+        return String.format("%s %s %s %s %s %s %s %s",detailID,orderID,productID,size,quatity,price,total,comment);
     }
 }

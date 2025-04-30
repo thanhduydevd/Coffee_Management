@@ -6,35 +6,45 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Order {
-    public final double TAX = 0.05;
+    public static final double TAX = 0.05;
     private final String OrderID;
     private LocalDate date;
     private String userID;
     private boolean isBringBack;
     private String tableID;
     private String saleID;
+    private double total;
 
-    public Order(String orderID, String userID, boolean isBringBack, String tableID, String saleID) {
+    public Order(String orderID, String userID, boolean isBringBack, String tableID, String saleID,double total) {
         OrderID = orderID;
         this.date = LocalDate.now();
         this.userID = userID;
         this.isBringBack = isBringBack;
         this.tableID = tableID;
         this.saleID = saleID;
-
+        this.total = total;
     }
 
-    public Order(String orderID, LocalDate date, String userID, boolean isBringBack, String tableID, String saleID) {
+    public Order(String orderID, LocalDate date, String userID, boolean isBringBack, String tableID, String saleID,double total) {
         OrderID = orderID;
         this.date = date;
         this.userID = userID;
         this.isBringBack = isBringBack;
         this.tableID = tableID;
         this.saleID = saleID;
+        this.total = total;
     }
 
     public Order(String orderID) {
         OrderID = orderID;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
     }
 
     public String getOrderID() {
@@ -97,6 +107,6 @@ public class Order {
     @Override
     public String toString() {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return String.format("%s %s %s %s %s %s",getOrderID(),df.format(date),userID,isBringBack,tableID,saleID);
+        return String.format("%s %s %s %s %s %s %s",getOrderID(),df.format(date),userID,isBringBack,tableID,saleID,total);
     }
 }
