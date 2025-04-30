@@ -1,5 +1,7 @@
 package com.damcafe.app.controller;
 
+import com.damcafe.app.controller.dialog.SetNoteController;
+import com.damcafe.app.controller.dialog.SetQuantityController;
 import com.damcafe.app.dao.Product_DAO;
 import com.damcafe.app.entity.OrderDetail;
 import com.damcafe.app.entity.Product;
@@ -8,6 +10,7 @@ import com.damcafe.app.gui.ShowDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -17,8 +20,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class CreateOrderController {
     @FXML
@@ -29,6 +34,8 @@ public class CreateOrderController {
 
     @FXML
     private ComboBox<Size> cbbSize;
+    @FXML
+    private RadioButton isHere;
 
     @FXML
     private TableColumn<OrderDetail,String> colTenMon,colGhiChu;
@@ -44,6 +51,16 @@ public class CreateOrderController {
 
     @FXML
     private FlowPane mon;
+
+    @FXML
+    private TabPane right;
+
+    @FXML
+    private Label Label ,txtTime,txtNhanVien,txtTotal;
+
+
+    @FXML
+    private Tab khuVuc,menu;
     public static int hashOrderDetail = Product_DAO.getMaxHash();
     private ArrayList<Product> productList;
 
@@ -74,9 +91,19 @@ public class CreateOrderController {
         ObservableList<OrderDetail> orderDetails = FXCollections.observableArrayList();
         tableDonHang.setItems(orderDetails);
 
+        isHere.setOnAction(e -> {
+            if (isHere.isSelected()) {
+                khuVuc.setDisable(true);
+                right.getSelectionModel().select(menu);  // Chuyển sang tab Menu
+            } else {
+                khuVuc.setDisable(false);
+            }
+        });
+
+
     }
 
-    private void addProductToOrder(Product product) {
+    private void addProductToOrder(Product product, int i , String mess) {
 
         ObservableList<OrderDetail> currentList = tableDonHang.getItems();
 
@@ -93,8 +120,8 @@ public class CreateOrderController {
                 currentList.size() + 1,
                 product.getTenSanPham(),
                 cbbSize.getValue(),
-                1,
-                "",
+                i,
+                mess,
                 product.getGiaGoc()
         );
         currentList.add(orderDetail);
@@ -144,8 +171,9 @@ public class CreateOrderController {
         // Click để thêm vào đơn hàng
         box.setOnMouseClicked(e -> {
             System.out.println("Clicked on: " + product.getTenSanPham());
-            openDialog("dieuchinhsoluong");
-            addProductToOrder(product);
+            int i = showQuantityDialog();
+            String mess = showNoteDialog();
+            addProductToOrder(product, i, mess);
             // openDialog("chitietdonhang");
         });
 
@@ -161,6 +189,48 @@ public class CreateOrderController {
     private String getHashOrderDetail(){
         DecimalFormat deFomat = new DecimalFormat("000");
         return String.format("CTHD%s",deFomat.format(hashOrderDetail++));
+    }
+
+    public String showNoteDialog() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/damcafe/app/views/order/dialogs/set_note.fxml"));
+            DialogPane pane = loader.load();
+
+            SetNoteController controller = loader.getController();
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(pane);
+            dialog.setTitle("Nhập ghi chú");
+
+            Optional<ButtonType> result = dialog.showAndWait();
+            if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.APPLY) {
+                return controller.getNoteText(); // Lấy nội dung ghi chú từ TextArea
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ""; // Trả về chuỗi rỗng nếu huỷ hoặc có lỗi
+    }
+
+    public int showQuantityDialog() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/damcafe/app/views/order/dialogs/set_quantity.fxml"));
+            DialogPane pane = loader.load();
+
+
+            SetQuantityController controller = loader.getController();
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(pane);
+            dialog.setTitle("Nhập số lượng");
+
+            Optional<ButtonType> result = dialog.showAndWait();
+            if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.APPLY) {
+                return controller.getQuantity();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 1; // Mặc định nếu người dùng huỷ hoặc xảy ra lỗi
     }
 
 }
