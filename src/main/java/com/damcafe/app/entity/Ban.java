@@ -6,21 +6,19 @@ import java.util.Objects;
 public class Ban {
     private final String maBan;
     private boolean isUse;
-    private LocalDate start;
-    private LocalDate end;
-    private int soGhe;
+    private Tang tang;
+    private String maOrder;
 
     public Ban(String maBan) {
         this.maBan = maBan;
         isUse = false;
     }
 
-    public Ban(String maBan, boolean isUse, LocalDate start, LocalDate end, int soGhe) {
+    public Ban(String maBan, boolean isUse, Tang tang, String maOrder) {
         this.maBan = maBan;
         this.isUse = isUse;
-        this.start = start;
-        this.end = end;
-        this.soGhe = soGhe;
+        this.tang = tang;
+        this.maOrder = maOrder;
     }
 
     public String getMaBan() {
@@ -35,28 +33,20 @@ public class Ban {
         isUse = use;
     }
 
-    public LocalDate getStart() {
-        return start;
+    public Tang getTang() {
+        return tang;
     }
 
-    public void setStart(LocalDate start) {
-        this.start = start;
+    public void setTang(Tang tang) {
+        this.tang = tang;
     }
 
-    public LocalDate getEnd() {
-        return end;
+    public String getMaOrder() {
+        return maOrder;
     }
 
-    public void setEnd(LocalDate end) {
-        this.end = end;
-    }
-
-    public int getSoGhe() {
-        return soGhe;
-    }
-
-    public void setSoGhe(int soGhe) {
-        this.soGhe = soGhe;
+    public void setMaOrder(String maOrder) {
+        this.maOrder = maOrder;
     }
 
     @Override

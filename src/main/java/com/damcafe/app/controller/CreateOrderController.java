@@ -2,7 +2,9 @@ package com.damcafe.app.controller;
 
 import com.damcafe.app.controller.dialog.SetNoteController;
 import com.damcafe.app.controller.dialog.SetQuantityController;
+import com.damcafe.app.dao.Ban_DAO;
 import com.damcafe.app.dao.Product_DAO;
+import com.damcafe.app.entity.Ban;
 import com.damcafe.app.entity.OrderDetail;
 import com.damcafe.app.entity.Product;
 import com.damcafe.app.entity.Size;
@@ -13,12 +15,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.util.converter.IntegerStringConverter;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -50,17 +54,18 @@ public class CreateOrderController {
     private TableColumn<OrderDetail, Double> colDonGia,colThanhTien;
 
     @FXML
-    private FlowPane mon;
+    private FlowPane mon,ban;
 
     @FXML
     private TabPane right;
 
     @FXML
-    private Label Label ,txtTime,txtNhanVien,txtTotal;
+    private Label txtViTri ,txtTime,txtNhanVien,txtTotal;
 
 
     @FXML
     private Tab khuVuc,menu;
+
     public static int hashOrderDetail = Product_DAO.getMaxHash();
     private ArrayList<Product> productList;
 
@@ -78,6 +83,8 @@ public class CreateOrderController {
         //lấy product về từ sql
         ArrayList<Product> productList = loadProductsToPane();
 
+        //lấy bàn về từ sql;
+        loadBanToPane();
         // Thiết lập các cột của TableView
         colSTT.setCellValueFactory(new PropertyValueFactory<>("stt"));
         colTenMon.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -91,6 +98,7 @@ public class CreateOrderController {
         ObservableList<OrderDetail> orderDetails = FXCollections.observableArrayList();
         tableDonHang.setItems(orderDetails);
 
+        //xử lí tắt bàn thông qua radio mang về
         isHere.setOnAction(e -> {
             if (isHere.isSelected()) {
                 khuVuc.setDisable(true);
@@ -100,9 +108,54 @@ public class CreateOrderController {
             }
         });
 
+        //Xử lí thay đổi thông tin trực tiếp trên bảng
+        tableDonHang.setEditable(true);
+
+        colSoLuong.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        colSoLuong.setOnEditCommit(event -> {
+            OrderDetail od = event.getRowValue();
+            od.setQuatity(event.getNewValue());
+            tableDonHang.refresh();
+        });
+
+        colGhiChu.setCellFactory(TextFieldTableCell.forTableColumn());
+        colGhiChu.setOnEditCommit(event -> {
+            OrderDetail od = event.getRowValue();
+            od.setComment(event.getNewValue());
+        });
+
+        if (!tableDonHang.getItems().isEmpty()) {
+            OrderDetail od = tableDonHang.getItems().getFirst();
+            od.setQuatity(od.getQuatity() + 1);
+            tableDonHang.refresh();
+        }
+        //thay đổi thông tin thông qua button
+        btnNote.setOnAction(e -> {
+            OrderDetail selected = tableDonHang.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                selected.setComment(showNoteDialog());
+                tableDonHang.refresh();
+            } else {}
+        });
+        btnQuantity.setOnAction(e->{
+            OrderDetail selected = tableDonHang.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                selected.setQuatity(showQuantityDialog());
+                tableDonHang.refresh();
+            } else {}
+        });
+        cbbSize.setOnAction(e ->{
+            OrderDetail selected = tableDonHang.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                selected.setSize(cbbSize.getValue());
+                tableDonHang.refresh();
+            } else {}
+        });
+
 
     }
 
+    //Thêm sản phẩm vào hóa đơn
     private void addProductToOrder(Product product, int i , String mess) {
 
         ObservableList<OrderDetail> currentList = tableDonHang.getItems();
@@ -128,6 +181,43 @@ public class CreateOrderController {
     }
 
 
+    private ArrayList<Ban> loadBanToPane() {
+        ArrayList<Ban> danhSach = Ban_DAO.loadBanFromDB();
+        for (Ban p : danhSach) {
+            addBanToFlowPane(p);
+        }
+        return danhSach;
+    }
+
+    //load bàn vào danh sách
+    private void addBanToFlowPane(Ban b) {
+        VBox box = new VBox();
+        box.getStyleClass().add("box-vitri");
+        if (b.isUse()) {
+            box.getStyleClass().add("box-vitri-active");
+        }
+        box.getStylesheets().add(getClass().getResource("/com/damcafe/app/styles/dashboard_style.css").toExternalForm());
+
+        Text textTenBan = new Text(b.getMaBan());
+        Label labelTrangThai = new Label(b.isUse()?"Có khách":"Trống");
+
+        box.getChildren().addAll(textTenBan, labelTrangThai);
+        ban.getChildren().add(box);
+
+        ban.setOnMouseClicked(e -> {
+            if(b.isUse()){
+                b.setUse(false);
+                txtViTri.setText("");
+            }else{
+                txtViTri.setText( b.getMaBan()+ " - "+ b.getTang().getTenTang());
+            }
+        });
+        box.getStyleClass().add("box-vitri");
+        if (b.isUse()) {
+            box.getStyleClass().add("box-vitri-active");
+        }
+    }
+
     private ArrayList<Product> loadProductsToPane() {
         ArrayList<Product> danhSach = Product_DAO.loadProductFromDB();
         for (Product p : danhSach) {
@@ -136,6 +226,7 @@ public class CreateOrderController {
         return danhSach;
     }
 
+    //load sản phẩm vào danh sách
     private void addProductToPane(Product product) {
         VBox box = new VBox();
         box.getStyleClass().add("box-sanpham");
@@ -174,7 +265,6 @@ public class CreateOrderController {
             int i = showQuantityDialog();
             String mess = showNoteDialog();
             addProductToOrder(product, i, mess);
-            // openDialog("chitietdonhang");
         });
 
         mon.getChildren().add(box);
