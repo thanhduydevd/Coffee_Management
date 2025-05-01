@@ -130,17 +130,35 @@ public class Product_DAO {
         PreparedStatement stmt = null;
         int result = 0;
         try {
-            // check ma san pham
-            String sql = "SELECT * FROM SanPham WHERE maSanPham = ?";
+            // Kiểm tra nếu sản phẩm đã tồn tại và đang ACTIVE (trangThai = 1)
+            String sql = "SELECT trangThai FROM SanPham WHERE maSanPham = ?";
             stmt = con.prepareStatement(sql);
             stmt.setString(1, product.getMaSanPham());
             ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return false; // ma san pham da ton tai
-            }
-            stmt.close();
 
-            // them san pham
+            if (rs.next()) {
+                int status = rs.getInt("trangThai");
+                stmt.close();
+                if (status == 1) {
+                    return false; // Trùng mã và đang hoạt động
+                } else {
+                    // Nếu đã bị ẩn (trangThai = 0) → cập nhật lại thay vì insert
+                    String updateSQL = "UPDATE SanPham SET tenSanPham=?, maLoaiSanPham=?, kichThuoc=?, giaGoc=?, moTa=?, hinhAnh=?, trangThai=1 WHERE maSanPham=?";
+                    stmt = con.prepareStatement(updateSQL);
+                    stmt.setString(1, product.getTenSanPham());
+                    stmt.setString(2, product.getLoaiSanPham().getMaLoaiSanPham());
+                    stmt.setString(3, product.getKichThuoc().toString());
+                    stmt.setDouble(4, product.getGiaGoc());
+                    stmt.setString(5, product.getMoTa());
+                    stmt.setString(6, product.getHinhAnh());
+                    stmt.setString(7, product.getMaSanPham());
+                    result = stmt.executeUpdate();
+                    return result > 0;
+                }
+            }
+
+            // Nếu chưa có thì INSERT mới
+            stmt.close();
             String sqlInsert = "INSERT INTO SanPham (maSanPham, tenSanPham, maLoaiSanPham, kichThuoc, giaGoc, moTa, hinhAnh, trangThai) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             stmt = con.prepareStatement(sqlInsert);
@@ -166,6 +184,7 @@ public class Product_DAO {
         }
         return result > 0;
     }
+
 
     public static boolean updateProductToDB(Product product) {
         ConnectDB.getInstance();

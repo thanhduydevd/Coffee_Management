@@ -18,7 +18,9 @@ import javafx.util.StringConverter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProductManagementController {
 
@@ -52,12 +54,10 @@ public class ProductManagementController {
     private ObservableList<Product> productList = FXCollections.observableArrayList();
     private ArrayList<Product> productsDB = Product_DAO.getAllProducts();
     public void initialize() {
-        // Khởi tạo DAO và load danh sách loại sản phẩm
         List<ProductCategory> categories = ProductCategory_DAO.getAllProductCategories();
         product_category.getItems().setAll(categories);
         product_search_category.getItems().setAll(categories);
-
-        // Hiển thị tên loại sản phẩm trong ComboBox
+        product_category.getSelectionModel().selectFirst();
         StringConverter<ProductCategory> conv = new StringConverter<>() {
             @Override public String toString(ProductCategory c) { return c == null ? "" : c.getTenLoaiSanPham(); }
             @Override public ProductCategory fromString(String s) { return null; }
@@ -65,11 +65,9 @@ public class ProductManagementController {
         product_category.setConverter(conv);
         product_search_category.setConverter(conv);
 
-        // Cài đặt lựa chọn sắp xếp
         product_search_sort.getItems().addAll("Mặc định", "Tên A → Z", "Tên Z → A", "Giá thấp → cao", "Giá cao → thấp");
         product_search_sort.getSelectionModel().selectFirst();
 
-        // Cài đặt lựa chọn kích thước
         product_size.getItems().addAll(Size.values());
         product_size.getSelectionModel().selectFirst();
         product_size.setConverter(new StringConverter<>() {
@@ -77,7 +75,6 @@ public class ProductManagementController {
             @Override public Size fromString(String s) { return Size.valueOf(s); }
         });
 
-        // Ánh xạ cột với thuộc tính Product
         colMaSanPham.setCellValueFactory(new PropertyValueFactory<>("maSanPham"));
         colTenSanPham.setCellValueFactory(new PropertyValueFactory<>("tenSanPham"));
         colLoaiSanPham.setCellValueFactory(new PropertyValueFactory<>("loaiSanPham"));
@@ -125,9 +122,9 @@ public class ProductManagementController {
         button_add.setOnAction(e -> addProduct());
         button_delete.setOnAction(e -> deleteProduct());
         button_update.setOnAction(e -> updateProduct());
-        product_search_name.setOnKeyReleased(e -> searchProductByName());
-        product_search_category.setOnAction(e -> searchProductByCategory());
-        product_search_sort.setOnAction(e -> searchProductBySort());
+        product_search_name.setOnKeyReleased(e -> filterAll());
+        product_search_category.setOnAction(e -> filterAll());
+        product_search_sort.setOnAction(e -> filterAll());
 
         productTable.setOnMouseClicked(e -> {
             Product p = productTable.getSelectionModel().getSelectedItem();
@@ -144,7 +141,6 @@ public class ProductManagementController {
         });
     }
 
-    /** Trả về tên file để lưu vào CSDL và load lại từ resource */
     private String getRelativeImageName(String absolutePath) {
         return new File(absolutePath).getName();
     }
@@ -174,12 +170,6 @@ public class ProductManagementController {
 
         if (id.isEmpty() || !id.matches("SP\\d{3}")) {
             message.setText("Mã sản phẩm phải chính xác. VD: SP001!");
-            message.setStyle("-fx-text-fill: red;");
-            return false;
-        }
-
-        if (productList.stream().anyMatch(p -> p.getMaSanPham().equals(id))) {
-            message.setText("Mã sản phẩm đã tồn tại!");
             message.setStyle("-fx-text-fill: red;");
             return false;
         }
@@ -267,7 +257,7 @@ public class ProductManagementController {
                 clearForm();
                 productTable.refresh();
             } else {
-                message.setText("Thêm sản phẩm thất bại!");
+                message.setText("Mã sản phẩm đã tồn tại!");
                 message.setStyle("-fx-text-fill: red;");
             }
         }
@@ -289,6 +279,7 @@ public class ProductManagementController {
                 updateTable();
                 message.setText("Xóa sản phẩm thành công!");
                 message.setStyle("-fx-text-fill: green;");
+                clearForm();
             } else {
                 message.setText("Xóa sản phẩm thất bại!");
                 message.setStyle("-fx-text-fill: red;");
@@ -303,69 +294,58 @@ public class ProductManagementController {
             message.setStyle("-fx-text-fill: red;");
             return;
         } else  {
-            Product newProduct = readData();
-            if (Product_DAO.updateProductToDB(newProduct)) {
-                updateTable();
-                message.setText("Cập nhật sản phẩm thành công!");
-                message.setStyle("-fx-text-fill: green;");
-                clearForm();
-                productTable.getSelectionModel().clearSelection();
-                System.out.println(newProduct);
-            } else {
-                message.setText("Cập nhật sản phẩm thất bại!");
-                message.setStyle("-fx-text-fill: red;");
+            if (validateData()) {
+                Product p = readData();
+                if (Product_DAO.updateProductToDB(p)) {
+                    updateTable();
+                    message.setText("Cập nhật sản phẩm thành công!");
+                    message.setStyle("-fx-text-fill: green;");
+                    clearForm();
+                } else {
+                    message.setText("Cập nhật sản phẩm thất bại!");
+                    message.setStyle("-fx-text-fill: red;");
+                }
             }
         }
 
     }
 
-    private void searchProductByName() {
-        String searchText = product_search_name.getText().trim();
-        if (searchText.isEmpty()) {
-            productTable.setItems(productList);
-            return;
-        }
-        List<Product> filteredList = new ArrayList<>();
-        for (Product p : productList) {
-            if (p.getTenSanPham().toLowerCase().contains(searchText.toLowerCase())) {
-                filteredList.add(p);
-            }
-        }
-        productTable.setItems(FXCollections.observableArrayList(filteredList));
-    }
-
-    private void searchProductByCategory() {
+    private void filterAll() {
+        String searchText = product_search_name.getText().trim().toLowerCase();
         ProductCategory selectedCategory = product_search_category.getValue();
-        if (selectedCategory == null) {
-            productTable.setItems(productList);
-            return;
+        String selectedSort = product_search_sort.getValue();
+
+        List<Product> filteredList = new ArrayList<>(productsDB);
+
+        // Lọc theo tên
+        if (!searchText.isEmpty()) {
+            filteredList = filteredList.stream()
+                    .filter(p -> p.getTenSanPham().toLowerCase().contains(searchText))
+                    .collect(Collectors.toList());
         }
-        List<Product> filteredList = new ArrayList<>();
-        for (Product p : productList) {
-            if (p.getLoaiSanPham().equals(selectedCategory)) {
-                filteredList.add(p);
+
+        // Lọc theo loại sản phẩm
+        if (selectedCategory != null) {
+            filteredList = filteredList.stream()
+                    .filter(p -> p.getLoaiSanPham().getMaLoaiSanPham().equals(selectedCategory.getMaLoaiSanPham()))
+                    .collect(Collectors.toList());
+        }
+
+        // Sắp xếp nếu có lựa chọn
+        if (selectedSort != null && !selectedSort.equals("Mặc định")) {
+            if (selectedSort.equals("Tên A → Z")) {
+                filteredList.sort(Comparator.comparing(Product::getTenSanPham));
+            } else if (selectedSort.equals("Tên Z → A")) {
+                filteredList.sort(Comparator.comparing(Product::getTenSanPham).reversed());
+            } else if (selectedSort.equals("Giá thấp → cao")) {
+                filteredList.sort(Comparator.comparingDouble(Product::getGiaGoc));
+            } else if (selectedSort.equals("Giá cao → thấp")) {
+                filteredList.sort(Comparator.comparingDouble(Product::getGiaGoc).reversed());
             }
         }
-        productTable.setItems(FXCollections.observableArrayList(filteredList));
-    }
 
-    private void searchProductBySort() {
-        String selectedSort = product_search_sort.getValue();
-        if (selectedSort.equals("Mặc định")) {
-            productTable.setItems(productList);
-            return;
-        }
-        List<Product> sortedList = new ArrayList<>(productList);
-        if (selectedSort.equals("Tên A → Z")) {
-            sortedList.sort((p1, p2) -> p1.getTenSanPham().compareTo(p2.getTenSanPham()));
-        } else if (selectedSort.equals("Tên Z → A")) {
-            sortedList.sort((p1, p2) -> p2.getTenSanPham().compareTo(p1.getTenSanPham()));
-        } else if (selectedSort.equals("Giá thấp → cao")) {
-            sortedList.sort((p1, p2) -> Double.compare(p1.getGiaGoc(), p2.getGiaGoc()));
-        } else if (selectedSort.equals("Giá cao → thấp")) {
-            sortedList.sort((p1, p2) -> Double.compare(p2.getGiaGoc(), p1.getGiaGoc()));
-        }
-        productTable.setItems(FXCollections.observableArrayList(sortedList));
+        // Hiển thị kết quả cuối cùng
+        productTable.setItems(FXCollections.observableArrayList(filteredList));
     }
 
     private void clearForm() {
