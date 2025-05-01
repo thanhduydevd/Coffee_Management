@@ -205,14 +205,18 @@ public class CreateOrderController {
         box.getChildren().addAll(textTenBan, labelTrangThai);
         ban.getChildren().add(box);
 
-        ban.setOnMouseClicked(e -> {
+        box.setOnMouseClicked(e -> {
             if(b.isUse()){
                 b.setUse(false);
                 txtViTri.setText("");
+                box.getStyleClass().add("box-vitri-selected");
             }else{
                 txtViTri.setText( b.getMaBan()+ " - "+ b.getTang().getTenTang());
+                box.getStyleClass().add("box-vitri-active");
+
             }
         });
+
         box.getStyleClass().add("box-vitri");
         if (b.isUse()) {
             box.getStyleClass().add("box-vitri-active");
