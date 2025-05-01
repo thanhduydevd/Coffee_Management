@@ -38,7 +38,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <TextField prefHeight="35.0" promptText="Nhập số lượng sản phẩm" style="-fx-background-color: #f5f3f2; -fx-border-color: transparent transparent transparent  #8B5A2B; -fx-border-width: 5px;" GridPane.rowIndex="1" />
+                  <TextField fx:id="txtSoLuong" prefHeight="35.0" promptText="Nhập số lượng sản phẩm" style="-fx-background-color: #f5f3f2; -fx-border-color: transparent transparent transparent  #8B5A2B; -fx-border-width: 5px;" GridPane.rowIndex="1" />
                   <Label text="Nhập số lượng:" />
                </children>
             </GridPane>

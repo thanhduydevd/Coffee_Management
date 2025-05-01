@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<DialogPane fx:id="dialogPane" prefWidth="500.0" style="-fx-background-color: white;" stylesheets="@../../../styles/dialog_style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.damcafe.app.controller.dialog.PaymentController">
+   <header>
+      <FlowPane alignment="CENTER" style="-fx-background-color: #8B5A2B;">
+         <children>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Khách Hàng Thanh Toán">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+               <FlowPane.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </FlowPane.margin>
+            </Text>
+         </children>
+      </FlowPane>
+   </header>
+   <content>
+      <FlowPane alignment="CENTER">
+         <children>
+            <GridPane hgap="10.0" prefHeight="100.0" prefWidth="400.0" vgap="10.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <TextField fx:id="khachDua" prefHeight="35.0" promptText="Nhập số tiền khách đưa" style="-fx-background-color: #f5f3f2; -fx-border-color: transparent transparent transparent  #8B5A2B; -fx-border-width: 5px;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label text="Tổng tiền phải trả:">
+                     <font>
+                        <Font size="15.0" />
+                     </font></Label>
+                  <Text fx:id="thanhTien" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="55,000đ" GridPane.columnIndex="1">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Text>
+                  <Label text="Tiền khách đưa:" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <Label text="Tiền trả lại khách:" GridPane.rowIndex="2">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <Text id="tienThua" fx:id="tienThua" disable="true" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="30,000đ" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Text>
+               </children>
+            </GridPane>
+         </children>
+      </FlowPane>
+   </content>
+
+</DialogPane>

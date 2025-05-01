@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 public class SetNoteController {
+
     @FXML
     private DialogPane dialogPane;
 
@@ -13,7 +14,9 @@ public class SetNoteController {
     @FXML
     private ButtonType cancelButton, applyButton;
 
-    public void initialize(){
+    private String noteText = ""; // <-- Biến lưu ghi chú
+
+    public void initialize() {
         cancelButton = new ButtonType("Huỷ bỏ", ButtonBar.ButtonData.CANCEL_CLOSE);
         applyButton = new ButtonType("Xác nhận", ButtonBar.ButtonData.APPLY);
 
@@ -23,11 +26,16 @@ public class SetNoteController {
         // Gán sự kiện cho nút "Xác nhận"
         Button applyBtn = (Button) dialogPane.lookupButton(applyButton);
         applyBtn.setOnAction(event -> {
-            suKienApply();
+            suKienApply();  // Không cần truyền tham số
         });
     }
 
-    public void suKienApply(){
-        System.out.println(abc.getText());
+    private void suKienApply() {
+        noteText = abc.getText();  // Lưu ghi chú
+    }
+
+    public String getNoteText() {
+        return noteText;
     }
 }
+

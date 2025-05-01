@@ -1,11 +1,11 @@
 package com.damcafe.app.controller;
 
 import com.damcafe.app.connectDB.ConnectDB;
+import com.damcafe.app.dao.NhanVien_DAO;
+import com.damcafe.app.dao.TaiKhoan_DAO;
 import com.damcafe.app.entity.NhanVien;
 import com.damcafe.app.entity.TaiKhoan;
 import com.damcafe.app.gui.MainApp;
-import dao.NhanVien_DAO;
-import dao.TaiKhoan_DAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
