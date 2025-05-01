@@ -48,11 +48,25 @@ public class ListOrderController {
     private ComboBox<String> choise;
 
     ArrayList<Order> orders = Order_DAO.loadVaoOrderList();
+    public static String maHD123 ;
 
     public void initialize(){
         loadOrderToTable();
         //Sự kiện click cho các button ở chức năng xem đơn hàng
-        btnOrderDetail.setOnAction(e-> openDialog("chitietdonhang"));
+        btnOrderDetail.setOnAction(e-> {
+            Order selectedOrder = tableDonHang1.getSelectionModel().getSelectedItem();
+            if (selectedOrder != null) {
+                maHD123 = selectedOrder.getOrderID(); // Lấy mã hóa đơn được chọn
+                openDialog("chitietdonhang");
+            } else {
+                // Nếu chưa chọn hóa đơn nào
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Thông báo");
+                alert.setHeaderText(null);
+                alert.setContentText("Vui lòng chọn một hóa đơn để xem chi tiết!");
+                alert.showAndWait();
+            }
+        });
         tableDonHang1.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // Bật chế độ chọn nhiều
         txtTim.textProperty().addListener((obs, oldText, newText) -> {
 

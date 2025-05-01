@@ -3,11 +3,10 @@ package com.damcafe.app.controller;
 import com.damcafe.app.controller.dialog.SetNoteController;
 import com.damcafe.app.controller.dialog.SetQuantityController;
 import com.damcafe.app.dao.Ban_DAO;
+import com.damcafe.app.dao.NhanVien_DAO;
 import com.damcafe.app.dao.Product_DAO;
-import com.damcafe.app.entity.Ban;
-import com.damcafe.app.entity.OrderDetail;
-import com.damcafe.app.entity.Product;
-import com.damcafe.app.entity.Size;
+import com.damcafe.app.dao.TaiKhoan_DAO;
+import com.damcafe.app.entity.*;
 import com.damcafe.app.gui.ShowDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -67,6 +66,8 @@ public class CreateOrderController {
     private Tab khuVuc,menu;
 
     public static int hashOrderDetail = Product_DAO.getMaxHash();
+    public String nhanVien = NhanVien_DAO.getTenVoiTenTK(UserSession.getUsername());
+
     private ArrayList<Product> productList;
 
     public void initialize(){
@@ -74,6 +75,7 @@ public class CreateOrderController {
         cbbSize.getItems().addAll(Size.S, Size.M, Size.L);
         cbbSize.setValue(Size.M);
 
+        txtNhanVien.setText(nhanVien);
         //Sự kiện click cho các button ở chức năng tạo đơn hàng
         btnQuantity.setOnAction(e -> openDialog("dieuchinhsoluong"));
         btnNote.setOnAction(e -> openDialog("thietlapghichu"));

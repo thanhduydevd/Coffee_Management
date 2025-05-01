@@ -42,7 +42,7 @@ public class TaiKhoan_DAO {
 
         return taiKhoan;
     }
-    public TaiKhoan getTaiKhoanTheoTen(String ten){
+    public static TaiKhoan getTaiKhoanTheoTen(String ten){
         TaiKhoan taiKhoan = null;
         String sql = "SELECT * FROM TaiKhoan WHERE tenTaiKhoan = ?";
         try {

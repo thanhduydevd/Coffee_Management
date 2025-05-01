@@ -10,8 +10,7 @@ package com.damcafe.app.entity;
 public enum Size {
     M("M"),
     L("L"),
-    S("S"),
-    NONE("none");
+    S("S");
 
     private String size;
 

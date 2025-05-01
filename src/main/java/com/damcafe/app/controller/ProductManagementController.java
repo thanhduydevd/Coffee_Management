@@ -1,5 +1,6 @@
 package com.damcafe.app.controller;
 
+import com.damcafe.app.dao.Product_DAO;
 import com.damcafe.app.entity.Product;
 import com.damcafe.app.entity.ProductCategory;
 import com.damcafe.app.dao.ProductCategory_DAO;
@@ -47,6 +48,7 @@ public class ProductManagementController {
     private String selectedAbsolutePath;
     private String selectedRelativeName;
     private ObservableList<Product> productList = FXCollections.observableArrayList();
+
 
     public void initialize() {
         // Khởi tạo DAO và load danh sách loại sản phẩm
@@ -103,6 +105,8 @@ public class ProductManagementController {
                 }
             }
         });
+
+
 
         productTable.setItems(productList);
 

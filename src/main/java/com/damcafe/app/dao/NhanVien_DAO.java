@@ -9,10 +9,7 @@ package com.damcafe.app.dao;
 import com.damcafe.app.connectDB.ConnectDB;
 import com.damcafe.app.entity.NhanVien;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 /*
  * @description
@@ -42,5 +39,23 @@ public class NhanVien_DAO {
             e.printStackTrace();
         }
         return nhanVien;
+    }
+    public static String getTenVoiTenTK(String ten) {
+        String maNhanVien = "";
+        try {
+            ConnectDB.getInstance().connect();
+            Connection con = ConnectDB.getConnection();
+            String sql = "SELECT maNhanVien FROM TaiKhoan WHERE tenTaiKhoan = ?";
+            PreparedStatement state = con.prepareStatement(sql);
+            state.setString(1, ten);
+            ResultSet re = state.executeQuery();
+
+            if (re.next()) {
+                maNhanVien = re.getString("maNhanVien");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return maNhanVien;
     }
 }

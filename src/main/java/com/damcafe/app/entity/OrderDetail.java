@@ -56,7 +56,18 @@ public class OrderDetail {
         this.price = price;
         this.total = getTotal();
         this.comment = comment;
+    }
 
+    public OrderDetail(String detailID, String orderID, String productID, Size size, int quatity, double price, String comment,String name) {
+        this.detailID = detailID;
+        this.orderID = orderID;
+        this.productID = productID;
+        this.size = size;
+        this.quatity = quatity;
+        this.price = price;
+        this.total = getTotal();
+        this.comment = comment;
+        this.name = name;
     }
 
     public OrderDetail(String id, Size value, int i1, String s, double giaGoc) {

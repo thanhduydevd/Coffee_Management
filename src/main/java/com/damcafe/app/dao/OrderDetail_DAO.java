@@ -9,10 +9,7 @@ import com.damcafe.app.connectDB.ConnectDB;
 import com.damcafe.app.entity.OrderDetail;
 import com.damcafe.app.entity.Size;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class OrderDetail_DAO {
@@ -45,4 +42,52 @@ public class OrderDetail_DAO {
         }
         return list;
     }
+
+    public static ArrayList<OrderDetail> getODByOrderID(String ma) {
+        ArrayList<OrderDetail> list = new ArrayList<>();
+        try {
+            ConnectDB.getInstance().connect();
+            Connection con = ConnectDB.getConnection();
+            String sql = "SELECT [maCTHoaDon],[maHoaDon],cthd.maSanPham " +
+                    ",cthd.kichThuoc ,[soLuong] ,[donGia]  ,[thanhTien] " +
+                    ",[ghiChu] ,sp.tenSanPham\n" +
+                    "FROM \n" +
+                    "    ChiTietHoaDon cthd\n" +
+                    "JOIN \n" +
+                    "    SanPham sp ON cthd.maSanPham = sp.maSanPham\n" +
+                    "WHERE \n" +
+                    "    cthd.maHoaDon = ?;";
+            PreparedStatement state = con.prepareStatement(sql);
+            state.setString(1, ma);
+            ResultSet re = state.executeQuery();
+            while (re.next()) {
+                String maCT = re.getString("maCTHoaDon");
+                String maHD = re.getString("maHoaDon");
+                String maSP = re.getString("maSanPham");
+                String kichThuoc = re.getString("kichThuoc");
+                int soLuong = re.getInt("soLuong");
+                double donGia = re.getDouble("donGia");
+                double thanhTien = re.getDouble("thanhTien");
+                String ghiChu = re.getString("ghiChu");
+                String name = re.getString("tenSanPham");
+                Size kt ;
+                if(kichThuoc.equals("M")){
+                    kt = Size.M;
+                }else if(kichThuoc.equals("S")){
+                    kt = Size.S;
+                }else{
+                    kt = Size.L;
+                }
+                OrderDetail od = new OrderDetail(maCT,maHD,maSP,kt,soLuong,donGia,ghiChu,name);
+
+
+                list.add(od);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
+
+
 }
