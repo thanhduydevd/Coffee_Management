@@ -5,7 +5,6 @@ import com.damcafe.app.controller.dialog.SetQuantityController;
 import com.damcafe.app.dao.Ban_DAO;
 import com.damcafe.app.dao.NhanVien_DAO;
 import com.damcafe.app.dao.Product_DAO;
-import com.damcafe.app.dao.TaiKhoan_DAO;
 import com.damcafe.app.entity.*;
 import com.damcafe.app.gui.ShowDialog;
 import javafx.collections.FXCollections;
@@ -15,7 +14,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
@@ -66,16 +64,24 @@ public class CreateOrderController {
     private Tab khuVuc,menu;
 
     public static int hashOrderDetail = Product_DAO.getMaxHash();
-    public String nhanVien = NhanVien_DAO.getTenVoiTenTK(UserSession.getUsername());
+    public NhanVien nhanVien = NhanVien_DAO.getNhanVien(UserSession.getUsername());
 
     private ArrayList<Product> productList;
+    private VBox selectedBox = null;
 
     public void initialize(){
 
         cbbSize.getItems().addAll(Size.S, Size.M, Size.L);
         cbbSize.setValue(Size.M);
 
-        txtNhanVien.setText(nhanVien);
+        //nhân viên hiện tại
+//        if (nhanVien != null){
+//            txtNhanVien.setText(nhanVien.getTenNhanVien());
+//            System.out.println("Nhân viên: "+UserSession.getUsername());
+//        }else{
+//            txtNhanVien.setText("Không có");
+//        }
+
         //Sự kiện click cho các button ở chức năng tạo đơn hàng
         btnQuantity.setOnAction(e -> openDialog("dieuchinhsoluong"));
         btnNote.setOnAction(e -> openDialog("thietlapghichu"));
@@ -194,33 +200,37 @@ public class CreateOrderController {
     private void addBanToFlowPane(Ban b) {
         VBox box = new VBox();
         box.getStyleClass().add("box-vitri");
-        if (b.isUse()) {
-            box.getStyleClass().add("box-vitri-active");
-        }
+
         box.getStylesheets().add(getClass().getResource("/com/damcafe/app/styles/dashboard_style.css").toExternalForm());
 
         Text textTenBan = new Text(b.getMaBan());
-        Label labelTrangThai = new Label(b.isUse()?"Có khách":"Trống");
+        Label labelTrangThai = new Label(b.isUse() ? "Có khách" : "Trống");
 
         box.getChildren().addAll(textTenBan, labelTrangThai);
         ban.getChildren().add(box);
 
-        box.setOnMouseClicked(e -> {
-            if(b.isUse()){
-                b.setUse(false);
-                txtViTri.setText("");
-                box.getStyleClass().add("box-vitri-selected");
-            }else{
-                txtViTri.setText( b.getMaBan()+ " - "+ b.getTang().getTenTang());
-                box.getStyleClass().add("box-vitri-active");
-
-            }
-        });
-
-        box.getStyleClass().add("box-vitri");
+        // Nếu bàn đang dùng, giữ màu active ban đầu
         if (b.isUse()) {
             box.getStyleClass().add("box-vitri-active");
         }
+
+        box.setOnMouseClicked(e -> {
+            // Gỡ bỏ class active khỏi bàn trước
+            if (selectedBox != null) {
+                selectedBox.getStyleClass().remove("box-vitri-active");
+            }
+
+            // Thêm class active cho bàn mới
+            if (!box.getStyleClass().contains("box-vitri-active")) {
+                box.getStyleClass().add("box-vitri-active");
+            }
+
+            selectedBox = box;
+
+            // Cập nhật vị trí bàn được chọn
+            txtViTri.setText(b.getMaBan() + " - " + b.getTang().getTenTang());
+            System.out.println("Đã chọn: " + b.getMaBan());
+        });
     }
 
     private ArrayList<Product> loadProductsToPane() {
@@ -249,7 +259,9 @@ public class CreateOrderController {
         String imgPath = product.getHinhAnh();
         if (imgPath != null && !imgPath.isBlank()) {
             try {
-                ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream(imgPath)));
+                ImageView imageView = new ImageView(getClass().getResource(
+                        "/com/damcafe/app/images/products/" + imgPath
+                ).toExternalForm());
                 imageView.setId(product.getMaSanPham());
                 imageView.setFitHeight(100);
                 imageView.setFitWidth(70);

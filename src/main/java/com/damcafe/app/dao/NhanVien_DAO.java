@@ -18,7 +18,7 @@ import java.sql.*;
  * version: 1.0
  */
 public class NhanVien_DAO {
-    public NhanVien getNhanVien(String id) {
+    public static NhanVien getNhanVien(String id) {
         NhanVien nhanVien = null;
         String sql = "SELECT * FROM NhanVien WHERE maNhanVien = ?";
         try {
