@@ -67,9 +67,9 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <TextField promptText="Nhập mã hoá đơn" GridPane.columnIndex="1" />
-                        <ComboBox prefWidth="300.0" promptText="Sắp xếp hoá đơn" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <DatePicker prefHeight="25.0" prefWidth="300.0" promptText="Chọn ngày lập" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField fx:id="txtTim" promptText="Nhập mã hoá đơn" GridPane.columnIndex="1" />
+                        <ComboBox fx:id="choise" prefWidth="300.0" promptText="Sắp xếp hoá đơn" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <DatePicker fx:id="txtNgay" prefHeight="25.0" prefWidth="300.0" promptText="Chọn ngày lập" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                      </children>
                      <VBox.margin>
                         <Insets />
