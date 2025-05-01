@@ -52,7 +52,7 @@ public class ListOrderController {
 
     private void addOrderToTable() {
         // Giả sử bạn có danh sách các Order từ DB
-        ArrayList<Order> orders = Order_DAO.loadOrderFromDB();
+        ArrayList<Order> orders = Order_DAO.loadVaoOrderList();
 
         ObservableList<Order> orderList = FXCollections.observableArrayList(orders);
 

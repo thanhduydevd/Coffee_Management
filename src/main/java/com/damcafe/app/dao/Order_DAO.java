@@ -52,6 +52,58 @@ public class Order_DAO {
 
         return list;
     }
+    public static ArrayList<Order> loadVaoOrderList() {
+
+        ArrayList<Order> list = new ArrayList<>();
+        try {
+            ConnectDB.getInstance().connect();
+            Connection con = ConnectDB.getConnection();
+            Statement stmt = con.createStatement();
+            String sql = "SELECT \n" +
+                    "    hd.maHoaDon,\n" +
+                    "    hd.ngayTao,\n" +
+                    "    hd.maNhanVien,\n" +
+                    "    hd.hinhThuc,\n" +
+                    "\thd.maKhuyenMai,\n" +
+                    "    hd.maBan AS maBan,\n" +
+                    "    SUM(ct.thanhTien) AS tongTien\n" +
+                    "FROM HoaDon hd\n" +
+                    "JOIN ChiTietHoaDon ct ON hd.maHoaDon = ct.maHoaDon\n" +
+                    "GROUP BY \n" +
+                    "    hd.maHoaDon,\n" +
+                    "    hd.ngayTao,\n" +
+                    "    hd.maNhanVien,\n" +
+                    "\thd.maKhuyenMai,\n" +
+                    "    hd.hinhThuc,\n" +
+                    "    hd.maBan\n" +
+                    "ORDER BY hd.ngayTao DESC;";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                String maHoaDon = rs.getString("maHoaDon");
+                Date ngayTao = rs.getDate("ngayTao");
+                String maNhanVien = rs.getString("maNhanVien");
+                int mangVe = rs.getInt("hinhThuc");
+                String maBan = rs.getString("maBan");
+                String maKhuyenMai = rs.getString("maKhuyenMai");
+                double tongTien = rs.getDouble("tongTien");
+
+                Order order = new Order(maHoaDon,
+                        ngayTao.toLocalDate(),
+                        maNhanVien,
+                        mangVe == 1,
+                        maBan,
+                        maKhuyenMai,
+                        tongTien);
+                list.add(order);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Lỗi khi tải dữ liệu hóa đơn", e);
+        }
+
+        return list;
+    }
 }
 
 

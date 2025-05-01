@@ -161,19 +161,20 @@ public class CreateOrderController {
         ObservableList<OrderDetail> currentList = tableDonHang.getItems();
 
         for (OrderDetail od : currentList) {
-            if (od.getProductID().equals(product.getMaSanPham()) && od.getSize() == cbbSize.getValue()) {
+            if (od.getName().equals(product.getTenSanPham()) && od.getSize() == cbbSize.getValue()) {
                 od.setQuatity(od.getQuatity() + 1);
-                tableDonHang.refresh();
+                tableDonHang.refresh();  // Cập nhật lại TableView
                 return;
             }
         }
-
         OrderDetail orderDetail = new OrderDetail(
                 getHashOrderDetail(),
+                product.getMaSanPham(),
                 cbbSize.getValue(),
                 i,
+                product.getGiaGoc(),
                 mess,
-                product.getGiaGoc()
+                product.getTenSanPham(),currentList.size() + 1
         );
         currentList.add(orderDetail);
     }

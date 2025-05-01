@@ -17,8 +17,37 @@ public class OrderDetail {
     private double price;
     private double total;
     private String comment;
+    private String name;
+    private int stt;
 
-    public OrderDetail(String detailID, String orderID, String productID,Size size, int quatity, double price, String comment) {
+    public OrderDetail(String detailID, String productID, Size size, int quatity, double price, String comment, String name, int stt) {
+        this.detailID = detailID;
+        this.productID = productID;
+        this.size = size;
+        this.quatity = quatity;
+        this.price = price;
+        this.comment = comment;
+        this.name = name;
+        this.stt = stt;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getStt() {
+        return stt;
+    }
+
+    public void setStt(int stt) {
+        this.stt = stt;
+    }
+
+    public OrderDetail(String detailID, String orderID, String productID, Size size, int quatity, double price, String comment) {
         this.detailID = detailID;
         this.orderID = orderID;
         this.productID = productID;
@@ -27,6 +56,7 @@ public class OrderDetail {
         this.price = price;
         this.total = getTotal();
         this.comment = comment;
+
     }
 
     public OrderDetail(String id, Size value, int i1, String s, double giaGoc) {
