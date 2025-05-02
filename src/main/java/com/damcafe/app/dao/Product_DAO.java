@@ -108,7 +108,7 @@ public class Product_DAO {
                     case "L" -> Size.L;
                     case "M" -> Size.M;
                     case "S" -> Size.S;
-                    default -> Size.NONE;
+                    default -> null;
                 };
                 for (ProductCategory loai : dsLoaiSP){
                     if (loaiSanPham.equals(loai.getMaLoaiSanPham())){

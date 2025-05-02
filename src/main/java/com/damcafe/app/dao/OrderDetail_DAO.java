@@ -89,5 +89,31 @@ public class OrderDetail_DAO {
         return list;
     }
 
+    public static void addODToDB(OrderDetail ct){
+        try {
+            ConnectDB.getInstance().connect();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        Connection con = ConnectDB.getConnection();
+        String sql = "INSERT INTO ChiTietHoaDon (maCTHoaDon, maHoaDon, maSanPham, kichThuoc, soLuong," +
+                " donGia, thanhTien, ghiChu) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try{
+            PreparedStatement psChiTiet = con.prepareStatement(sql);
+                psChiTiet.setString(1, ct.getDetailID());
+                psChiTiet.setString(2, ct.getOrderID());
+                psChiTiet.setString(3, ct.getProductID());
+                psChiTiet.setString(4, ct.getSize().getSize());
+                psChiTiet.setInt(5, ct.getQuatity());
+                psChiTiet.setDouble(6, ct.getPrice());
+                psChiTiet.setDouble(7, ct.getTotal());
+                psChiTiet.setString(8, ct.getComment());
 
+                psChiTiet.addBatch();
+            psChiTiet.executeBatch();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
+

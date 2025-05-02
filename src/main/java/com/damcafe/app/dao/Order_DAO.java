@@ -104,6 +104,56 @@ public class Order_DAO {
 
         return list;
     }
+    public static boolean addOrderToDB(Order hd) {
+        try {
+            ConnectDB.getInstance().connect();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        Connection conn = ConnectDB.getConnection();
+        PreparedStatement psHoaDon = null;
+
+        try {
+            conn.setAutoCommit(false); // Bắt đầu transaction
+
+            String sql = "INSERT INTO HoaDon (maHoaDon, ngayTao, maNhanVien, hinhThuc, maBan,maKhuyenMai) VALUES (?, ?, ?, ?, ?, ?)";
+            psHoaDon = conn.prepareStatement(sql);
+
+            psHoaDon.setString(1, hd.getOrderID());
+            psHoaDon.setDate(2, java.sql.Date.valueOf(hd.getDate()));
+            psHoaDon.setString(3, hd.getUserID());
+            psHoaDon.setBoolean(4, hd.isBringBack());
+            psHoaDon.setString(5, hd.getTableID());
+            psHoaDon.setString(6, hd.getSaleID());
+
+            psHoaDon.executeUpdate();
+
+            // TODO: Gọi thêmChiTietHoaDon(conn, hd.getOrderID(), hd.getOrderDetails());
+
+            conn.commit(); // Commit nếu mọi thứ OK
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (conn != null) {
+                try {
+                    conn.rollback(); // Rollback nếu có lỗi
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } finally {
+            try {
+                if (psHoaDon != null) psHoaDon.close();
+                if (conn != null) conn.setAutoCommit(true);
+                if (conn != null) conn.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return false;
+    }
+
 }
 
 

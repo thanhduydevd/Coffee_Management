@@ -1,6 +1,9 @@
 package com.damcafe.app.gui;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 
@@ -22,6 +25,15 @@ public class ShowDialog extends Dialog {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void showMessageDialog(Node owner, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Thông báo");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.initOwner(owner.getScene().getWindow());
+        alert.showAndWait();
     }
 
     private String getFxmlPath(String mainFunction){

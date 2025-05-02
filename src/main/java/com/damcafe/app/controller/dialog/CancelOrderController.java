@@ -9,6 +9,7 @@ public class CancelOrderController {
     @FXML
     private DialogPane dialogPane;
 
+
     public void initialize(){
         ButtonType cancelButton = new ButtonType("Không", ButtonBar.ButtonData.CANCEL_CLOSE);
         ButtonType applyButton = new ButtonType("Có", ButtonBar.ButtonData.APPLY);
