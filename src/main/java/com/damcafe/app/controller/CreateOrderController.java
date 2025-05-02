@@ -71,8 +71,11 @@ public class CreateOrderController {
     @FXML
     private ComboBox<String> cbbDanhMuc,cbbSort;
 
+    private String name = UserSession.getUsername();
+    private TaiKhoan taiKhoanHienTai = TaiKhoan_DAO.getTaiKhoanTheoTen(name);
+
     public static int hashOrderDetail = Product_DAO.getMaxHash();
-    public NhanVien nhanVien = NhanVien_DAO.getNhanVien(UserSession.getUsername());
+    public NhanVien nhanVien = NhanVien_DAO.getNhanVien(taiKhoanHienTai.getMaNhanVien().getMaNhanVien());
 
     private ArrayList<Product> allProducts = Product_DAO.loadProductFromDB();;
     private VBox selectedBox = null;
