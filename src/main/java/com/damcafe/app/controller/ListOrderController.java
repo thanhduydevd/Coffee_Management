@@ -1,6 +1,10 @@
 package com.damcafe.app.controller;
 
+import com.damcafe.app.connectDB.ConnectDB;
+import com.damcafe.app.dao.NhanVien_DAO;
 import com.damcafe.app.dao.Order_DAO;
+import com.damcafe.app.dao.TaiKhoan_DAO;
+import com.damcafe.app.entity.NhanVien;
 import com.damcafe.app.entity.Order;
 import com.damcafe.app.entity.OrderDetail;
 import com.damcafe.app.gui.ShowDialog;
@@ -9,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -148,7 +153,8 @@ public class ListOrderController {
         });
         colTenMon1.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getOrderID()));
         colDate.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getDate()));
-        colNhanVIen.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getUserID()));
+
+        colNhanVIen.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(NhanVien_DAO.getNhanVien(cellData.getValue().getUserID()).getTenNhanVien()));
         colHinhThuc.setCellValueFactory(cellData -> {
             String ht = cellData.getValue().isBringBack() ? "Mang về" : "Tại quán";
             return new javafx.beans.property.SimpleStringProperty(ht);

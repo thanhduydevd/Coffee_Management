@@ -22,7 +22,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="paneThemDonHang" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.damcafe.app.controller.CreateOrderController">
+<AnchorPane fx:id="paneThemDonHang" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.damcafe.app.controller.CreateOrderController">
    <children>
       <ScrollPane fitToWidth="true" prefHeight="625.0" stylesheets="@../../styles/dashboard_style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
          <padding>
@@ -123,11 +123,6 @@
                                     <Font name="System Bold" size="15.0" />
                                  </font>
                               </Label>
-                              <Label text="Đã bao gồm 10% thuế GTGT" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                                 <font>
-                                    <Font name="System Italic" size="10.0" />
-                                 </font>
-                              </Label>
                               <Label text="Vị trí" GridPane.rowIndex="1">
                                  <font>
                                     <Font name="System Bold" size="15.0" />
@@ -185,7 +180,6 @@
                                                             <Font name="System Bold" size="13.0" />
                                                          </font>
                                                       </Text>
-                                                      <ComboBox prefWidth="150.0" promptText="Chọn vị trí bàn" GridPane.columnIndex="1" />
                                                    </children>
                                                    <padding>
                                                       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -260,20 +254,7 @@
                                                       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                                    </padding>
                                                 </FlowPane>
-                                                <HBox alignment="CENTER" spacing="20.0">
-                                                   <children>
-                                                      <Button mnemonicParsing="false" styleClass="btn-chuyentrang" stylesheets="@../../styles/dashboard_style.css" text="Trước">
-                                                         <graphic>
-                                                            <FontAwesomeIcon fill="WHITE" glyphName="BACKWARD" />
-                                                         </graphic>
-                                                      </Button>
-                                                      <Button contentDisplay="RIGHT" mnemonicParsing="false" styleClass="btn-chuyentrang" stylesheets="@../../styles/dashboard_style.css" text="Sau">
-                                                         <graphic>
-                                                            <FontAwesomeIcon fill="WHITE" glyphName="FORWARD" />
-                                                         </graphic>
-                                                      </Button>
-                                                   </children>
-                                                </HBox>
+                                                <HBox alignment="CENTER" spacing="20.0" />
                                              </children>
                                              <padding>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
