@@ -11,6 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+
 <DialogPane fx:id="dialogPane" prefWidth="300.0" style="-fx-background-color: white;" stylesheets="@../../../styles/dialog_style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.damcafe.app.controller.dialog.SetQuantityController">
    <header>
       <FlowPane alignment="CENTER" style="-fx-background-color: #8B5A2B;">

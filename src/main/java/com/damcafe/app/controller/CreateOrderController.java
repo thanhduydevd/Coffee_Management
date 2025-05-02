@@ -12,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
@@ -19,6 +20,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.converter.IntegerStringConverter;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -81,6 +83,8 @@ public class CreateOrderController {
     private VBox selectedBox = null;
 
     public static double tongTienUI = 0;
+
+
     public void initialize(){
 
         cbbSize.getItems().addAll(Size.S, Size.M, Size.L);
@@ -155,8 +159,15 @@ public class CreateOrderController {
         colSoLuong.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         colSoLuong.setOnEditCommit(event -> {
             OrderDetail od = event.getRowValue();
-            od.setQuatity(event.getNewValue());
-            tableDonHang.refresh();
+            int oldQuantity = od.getQuatity(); // Lưu lại số lượng hiện tại
+            int newQuantity = showQuantityDialog(oldQuantity); // Hiển thị dialog và lấy giá trị mới
+
+            // Cập nhật số lượng nếu người dùng nhập giá trị mới
+            if (newQuantity != oldQuantity) {
+                od.setQuatity(newQuantity);
+                tableDonHang.refresh(); // Cập nhật lại bảng
+                updateTotal(); // Cập nhật tổng tiền
+            }
         });
 
         colGhiChu.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -171,25 +182,32 @@ public class CreateOrderController {
             tableDonHang.refresh();
         }
         //thay đổi thông tin thông qua button
-        btnNote.setOnAction(e -> {
-            OrderDetail selected = tableDonHang.getSelectionModel().getSelectedItem();
-            if (selected != null) {
-                selected.setComment(showNoteDialog());
-                tableDonHang.refresh();
-            } else {}
+        colGhiChu.setCellFactory(TextFieldTableCell.forTableColumn());
+        colGhiChu.setOnEditCommit(event -> {
+            OrderDetail od = event.getRowValue();
+            String oldComment = od.getComment(); // Lưu lại ghi chú hiện tại
+            String newComment = showNoteDialog(oldComment); // Hiển thị dialog và lấy ghi chú mới
+
+            // Cập nhật ghi chú nếu người dùng nhập giá trị mới
+            if (!newComment.equals(oldComment)) {
+                od.setComment(newComment);
+                tableDonHang.refresh(); // Cập nhật lại bảng
+            }
         });
+
         /**
          * @return: 1 nếu có nhập không đúng địng dạng.
          */
         btnQuantity.setOnAction(e->{
             OrderDetail selected = tableDonHang.getSelectionModel().getSelectedItem();
             if (selected != null) {
-                selected.setQuatity(showQuantityDialog());
+                selected.setQuatity(showQuantityDialog(1));
                 tableDonHang.refresh();
             } else {}
         });
         btnCancel.setOnAction(e -> {
             cancelOrder();
+            updateTotal();
         });
         cbbSize.setOnAction(e ->{
             OrderDetail selected = tableDonHang.getSelectionModel().getSelectedItem();
@@ -218,7 +236,7 @@ public class CreateOrderController {
             return;
         }
 
-        if (txtViTri.getText().isEmpty()) {
+        if ( !isHere.isSelected() && txtViTri.getText() == null ) {
             ShowDialog.showMessageDialog(btnPayment, "Vui lòng chọn bàn trước khi thanh toán!");
             return;
         }
@@ -230,16 +248,20 @@ public class CreateOrderController {
         double tongTien = getTotal();
 
         // Lấy mã bàn
-        String maBan = txtViTri.getText().split(" - ")[0];
+        String maBan = "";
+        if (maHD != null){
+            maBan = txtViTri.getText().split(" - ")[0];
+        }
 
         // Tạo hoá đơn
         Order hoaDon = new Order(maHD);
         hoaDon.setDate(LocalDate.now());
         hoaDon.setUserID(nhanVien==null?"none":nhanVien.getMaNhanVien());
-        hoaDon.setTableID(maBan);
-//        hoaDon.setSaleID();  //Khuyến mãi cần sửa đổi
+        hoaDon.setTableID(maBan==""?null:maBan);
+        hoaDon.setSaleID(null);  //Khuyến mãi cần sửa đổi
         hoaDon.setTotal(tongTien);
         hoaDon.setBringBack(isHere.isSelected());
+
 
         boolean hoaDonOK = Order_DAO.addOrderToDB(hoaDon);
 
@@ -249,6 +271,7 @@ public class CreateOrderController {
         }
 
         // Tạo chi tiết hoá đơn
+        ArrayList<OrderDetail> a = new ArrayList<>();
         for (OrderDetail od : tableDonHang.getItems()) {
             OrderDetail ct = new OrderDetail(getHashOrderDetail());
             ct.setOrderID(maHD);
@@ -257,7 +280,7 @@ public class CreateOrderController {
             ct.setPrice(od.getPrice());
             ct.setComment(od.getComment());
             ct.setSize(od.getSize());
-
+            a.add(ct);
             OrderDetail_DAO.addODToDB(ct);
         }
 
@@ -268,9 +291,61 @@ public class CreateOrderController {
         tableDonHang.getItems().clear();
         txtViTri.setText("");
         ShowDialog.showMessageDialog(btnPayment, "Thanh toán thành công!");
+        inHoaDon(hoaDon,a);
     }
 
+    public void inHoaDon(Order order, ArrayList<OrderDetail> orderDetails) {
+        StringBuilder invoice = new StringBuilder();
 
+        // In tiêu đề hóa đơn
+        invoice.append("====================================\n");
+        invoice.append("              HÓA ĐƠN\n");
+        invoice.append("====================================\n");
+
+        // In thông tin hóa đơn
+        invoice.append("Mã hóa đơn: ").append(order.getOrderID()).append("\n");
+        invoice.append("Ngày tạo: ").append(order.getDate()).append("\n");
+        invoice.append("Nhân viên: ").append(order.getUserID()).append("\n");
+
+        if (order.getTableID() != null && !order.getTableID().isEmpty()) {
+            invoice.append("Bàn: ").append(order.getTableID()).append("\n");
+        }
+
+        if (order.getSaleID() != null && !order.getSaleID().isEmpty()) {
+            invoice.append("Khuyến mãi: ").append(order.getSaleID()).append("\n");
+        }
+
+        invoice.append("====================================\n");
+
+        // In chi tiết hóa đơn (sản phẩm trong đơn hàng)
+        invoice.append("Danh sách sản phẩm:\n");
+
+        double totalAmount = 0;  // Tổng tiền
+        for (OrderDetail detail : orderDetails) {
+            invoice.append(detail.getProductID()).append(" - ")
+                    .append("Số lượng: ").append(detail.getQuatity()).append(" - ")
+                    .append("Giá: ").append(String.format("%.0fđ", detail.getPrice())).append(" - ")
+                    .append("Tổng: ").append(String.format("%.0fđ", detail.getPrice() * detail.getQuatity())).append("\n");
+
+            totalAmount += detail.getPrice() * detail.getQuatity();  // Cộng dồn tổng tiền
+        }
+
+        // In tổng tiền
+        invoice.append("====================================\n");
+        invoice.append("Tổng tiền: ").append(String.format("%.0fđ", totalAmount)).append("\n");
+
+        // Nếu có mang về
+        if (order.isBringBack()) {
+            invoice.append("Ghi chú: Mang về\n");
+        }
+
+        invoice.append("====================================\n");
+        invoice.append("Cảm ơn quý khách đã sử dụng dịch vụ!\n");
+        invoice.append("====================================\n");
+
+        // In ra console
+        System.out.println(invoice.toString());
+    }
 
     public void cancelOrder() {
         OrderDetail selected = tableDonHang.getSelectionModel().getSelectedItem();
@@ -323,6 +398,7 @@ public class CreateOrderController {
                 product.getTenSanPham(),currentList.size() + 1
         );
         currentList.add(orderDetail);
+        updateTotal();
     }
 
 
@@ -368,6 +444,8 @@ public class CreateOrderController {
             // Cập nhật vị trí bàn được chọn
             txtViTri.setText(b.getMaBan() + " - " + b.getTang().getTenTang());
             System.out.println("Đã chọn: " + b.getMaBan());
+
+            right.getSelectionModel().select(menu); // Chuyển sang tab "Menu"
         });
     }
 
@@ -393,22 +471,36 @@ public class CreateOrderController {
         // Giá sản phẩm
         Label price = new Label(String.format("%.0fđ", product.getGiaGoc()));
 
-        // Nếu có hình ảnh thì tạo ImageView
+        // Nếu có hình ảnh thì tải Image từ thư mục ngoài resources
         String imgPath = product.getHinhAnh();
         if (imgPath != null && !imgPath.isBlank()) {
             try {
-                ImageView imageView = new ImageView(getClass().getResource(
-                        "/src/main/data_images/products/" + imgPath
-                ).toExternalForm());
-                imageView.setId(product.getMaSanPham());
-                imageView.setFitHeight(100);
-                imageView.setFitWidth(70);
-                imageView.setPreserveRatio(true);
-                imageView.setPickOnBounds(true);
-                box.getChildren().add(imageView);
+                // Đường dẫn tuyệt đối tới thư mục chứa hình ảnh
+                String imagePath = "src/main/data_images/products/" + imgPath;  // Thay đổi đường dẫn ở đây
+
+                // Tạo đối tượng File từ đường dẫn
+                File file = new File(imagePath);
+
+                // Kiểm tra xem tệp có tồn tại không
+                if (file.exists() && file.isFile()) {
+                    // Tải ảnh từ file
+                    Image image = new Image(file.toURI().toString());  // Dùng URI để tạo Image
+                    // Tạo ImageView từ Image
+                    ImageView imageView = new ImageView(image);
+                    imageView.setFitHeight(100);  // Đặt chiều cao của ảnh
+                    imageView.setFitWidth(70);  // Đặt chiều rộng của ảnh
+                    imageView.setPreserveRatio(true);  // Đảm bảo tỷ lệ hình ảnh được giữ
+
+                    // Thêm ImageView vào VBox
+                    box.getChildren().add(imageView);
+                    System.out.println(imgPath);
+                } else {
+                    System.err.println("Không thể tìm thấy ảnh: " + imgPath);
+                }
+
             } catch (Exception e) {
                 System.err.println("Không thể tải ảnh: " + imgPath);
-                // Không thêm ImageView nếu lỗi
+                // Xử lý lỗi nếu không thể tải ảnh
             }
         }
 
@@ -417,15 +509,14 @@ public class CreateOrderController {
         // Click để thêm vào đơn hàng
         box.setOnMouseClicked(e -> {
             System.out.println("Clicked on: " + product.getTenSanPham());
-            int i = showQuantityDialog();
-            String mess = showNoteDialog();
+            int i = showQuantityDialog(1);
+            String mess = showNoteDialog("");
             addProductToOrder(product, i, mess);
-
         });
 
         mon.getChildren().add(box);
-
     }
+
 
     /**
      * Dùng để gọi thử có dialog khi test
@@ -441,33 +532,36 @@ public class CreateOrderController {
         return String.format("CTHD%s",deFomat.format(hashOrderDetail++));
     }
 
-    public String showNoteDialog() {
+    public String showNoteDialog(String currentComment) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/damcafe/app/views/order/dialogs/set_note.fxml"));
             DialogPane pane = loader.load();
 
             SetNoteController controller = loader.getController();
+            controller.setCurrentNote(currentComment); // Truyền ghi chú hiện tại vào dialog
+
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(pane);
             dialog.setTitle("Nhập ghi chú");
 
             Optional<ButtonType> result = dialog.showAndWait();
             if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.APPLY) {
-                return controller.getNoteText(); // Lấy nội dung ghi chú từ TextArea
+                return controller.getNoteText(); // Trả về ghi chú mới
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return ""; // Trả về chuỗi rỗng nếu huỷ hoặc có lỗi
+        return currentComment; // Trả về ghi chú cũ nếu người dùng hủy
     }
 
-    public int showQuantityDialog() {
+
+    public int showQuantityDialog(int currentQuantity) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/damcafe/app/views/order/dialogs/set_quantity.fxml"));
             DialogPane pane = loader.load();
 
-
-            SetQuantityController controller = loader.getController();
+            com.damcafe.app.controller.dialog.SetQuantityController controller = loader.getController();
+            controller.setCurrentQuantity(currentQuantity); // Truyền số lượng hiện tại vào dialog
 
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(pane);
@@ -475,13 +569,14 @@ public class CreateOrderController {
 
             Optional<ButtonType> result = dialog.showAndWait();
             if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.APPLY) {
-                return controller.getQuantity();
+                return controller.getQuantity(); // Trả về số lượng mới
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return 1; // Mặc định nếu người dùng huỷ hoặc xảy ra lỗi
+        return currentQuantity; // Trả về số lượng cũ nếu người dùng hủy
     }
+
 
     private void filterProductList() {
         String keyword = txtTim.getText().toLowerCase();
@@ -525,5 +620,32 @@ public class CreateOrderController {
             a += chiTiet.getTotal();
         }
         return a;
+    }
+
+    private void updateTotal() {
+        tongTienUI = getTotal();
+        // Định dạng tiền tệ
+        DecimalFormat df = new DecimalFormat("#,###");
+        // Cập nhật vào label txtTotal
+        txtTotal.setText("Tổng tiền: " + df.format(tongTienUI) + " đ");
+    }
+    public class SetQuantityController {
+        @FXML
+        private TextField txtQuantity;
+
+        private int currentQuantity;
+
+        public void setCurrentQuantity(int quantity) {
+            this.currentQuantity = quantity;
+            txtQuantity.setText(String.valueOf(quantity)); // Hiển thị số lượng hiện tại
+        }
+
+        public int getQuantity() {
+            try {
+                return Integer.parseInt(txtQuantity.getText()); // Trả về số lượng mới
+            } catch (NumberFormatException e) {
+                return currentQuantity; // Nếu nhập không hợp lệ, trả về số lượng cũ
+            }
+        }
     }
 }

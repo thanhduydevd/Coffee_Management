@@ -125,11 +125,14 @@ public class Order_DAO {
             psHoaDon.setString(3, hd.getUserID());
             psHoaDon.setBoolean(4, hd.isBringBack());
             psHoaDon.setString(5, hd.getTableID());
-            psHoaDon.setString(6, hd.getSaleID());
-
+            // Kiểm tra giá trị của maKhuyenMai và set giá trị NULL nếu nó là null
+            if (hd.getSaleID() == null) {
+                psHoaDon.setString(6, "null");  // Set NULL thực sự cho maKhuyenMai
+            } else {
+                psHoaDon.setString(6, hd.getSaleID());    // Set giá trị của maKhuyenMai nếu có
+            }
             psHoaDon.executeUpdate();
 
-            // TODO: Gọi thêmChiTietHoaDon(conn, hd.getOrderID(), hd.getOrderDetails());
 
             conn.commit(); // Commit nếu mọi thứ OK
             return true;

@@ -14,6 +14,23 @@ public class SetQuantityController {
     @FXML
     private TextField txtSoLuong;
 
+    @FXML
+    private TextField txtQuantity = new TextField();
+
+    private int currentQuantity;
+
+    public void setCurrentQuantity(int quantity) {
+        this.currentQuantity = quantity;
+        txtQuantity.setText(String.valueOf(quantity)); // Hiển thị số lượng hiện tại
+    }
+
+    public int getQuantityHT() {
+        try {
+            return Integer.parseInt(txtQuantity.getText()); // Trả về số lượng mới
+        } catch (NumberFormatException e) {
+            return currentQuantity; // Nếu nhập không hợp lệ, trả về số lượng cũ
+        }
+    }
     public void initialize() {
         ButtonType cancelButton = new ButtonType("Huỷ bỏ", ButtonBar.ButtonData.CANCEL_CLOSE);
         ButtonType applyButton = new ButtonType("Xác nhận", ButtonBar.ButtonData.APPLY);

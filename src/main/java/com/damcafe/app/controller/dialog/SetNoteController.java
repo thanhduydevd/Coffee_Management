@@ -16,6 +16,20 @@ public class SetNoteController {
 
     private String noteText = ""; // <-- Biến lưu ghi chú
 
+    @FXML
+    private TextArea txtNote = new TextArea();
+
+    private String currentNote = "";
+
+    public void setCurrentNote(String note) {
+        this.currentNote = note;
+        txtNote.setText(note);
+    }
+
+    public String getNoteTextString() {
+        return txtNote.getText(); // Trả về ghi chú mới
+    }
+
     public void initialize() {
         cancelButton = new ButtonType("Huỷ bỏ", ButtonBar.ButtonData.CANCEL_CLOSE);
         applyButton = new ButtonType("Xác nhận", ButtonBar.ButtonData.APPLY);
