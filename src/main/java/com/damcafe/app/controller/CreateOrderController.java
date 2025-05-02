@@ -398,7 +398,7 @@ public class CreateOrderController {
         if (imgPath != null && !imgPath.isBlank()) {
             try {
                 ImageView imageView = new ImageView(getClass().getResource(
-                        "/com/damcafe/app/images/products/" + imgPath
+                        "/src/main/data_images/products/" + imgPath
                 ).toExternalForm());
                 imageView.setId(product.getMaSanPham());
                 imageView.setFitHeight(100);
