@@ -11,6 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.control.ButtonType?>
 <DialogPane fx:id="dialogPane" prefWidth="500.0" style="-fx-background-color: white;" stylesheets="@../../../styles/dialog_style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.damcafe.app.controller.dialog.PaymentController">
    <header>
       <FlowPane alignment="CENTER" style="-fx-background-color: #8B5A2B;">
@@ -70,5 +71,8 @@
          </children>
       </FlowPane>
    </content>
-
+   <buttonTypes>
+      <ButtonType fx:id="btnThanhToan" text="Thanh toán" buttonData="APPLY"/>
+      <ButtonType text="Thoát" buttonData="CANCEL_CLOSE"/>
+   </buttonTypes>
 </DialogPane>
