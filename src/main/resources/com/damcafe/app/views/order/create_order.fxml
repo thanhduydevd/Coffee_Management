@@ -22,7 +22,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="paneThemDonHang" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.damcafe.app.controller.CreateOrderController">
+<AnchorPane fx:id="paneThemDonHang" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.damcafe.app.controller.CreateOrderController">
    <children>
       <ScrollPane fitToWidth="true" prefHeight="625.0" stylesheets="@../../styles/dashboard_style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
          <padding>
@@ -143,7 +143,7 @@
                                     <Font name="System Bold" size="15.0" />
                                  </font>
                               </Label>
-                              <TextField promptText="Nhập mã khuyến mãi" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <TextField fx:id="tfMaKhuyenMai" promptText="Nhập mã khuyến mãi" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <Button fx:id="btnPayment" mnemonicParsing="false" styleClass="btn-chucnang" stylesheets="@../../styles/dashboard_style.css" text="Thanh toán" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
                                  <graphic>
                                     <FontAwesomeIcon fill="WHITE" glyphName="FILE_TEXT_ALT" />

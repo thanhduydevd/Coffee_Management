@@ -277,7 +277,7 @@ public class ProductManagementController {
                 message.setStyle("-fx-text-fill: green;");
                 clearForm();
                 productTable.refresh();
-                System.out.println("Thêm sản phẩm thành công: " + p);
+                //System.out.println("Thêm sản phẩm thành công: " + p);
             } else {
                 message.setText("Mã sản phẩm đã tồn tại!");
                 message.setStyle("-fx-text-fill: red;");

@@ -1,7 +1,6 @@
 package com.damcafe.app.controller;
 
 import com.damcafe.app.controller.dialog.SetNoteController;
-import com.damcafe.app.controller.dialog.SetQuantityController;
 import com.damcafe.app.dao.*;
 import com.damcafe.app.entity.*;
 import com.damcafe.app.gui.ShowDialog;
@@ -68,7 +67,7 @@ public class CreateOrderController {
     private Tab khuVuc,menu;
 
     @FXML
-    private TextField txtTim;
+    private TextField txtTim, tfMaKhuyenMai;
 
     @FXML
     private ComboBox<String> cbbDanhMuc,cbbSort;
@@ -79,13 +78,17 @@ public class CreateOrderController {
     public static int hashOrderDetail = Product_DAO.getMaxHash();
     public NhanVien nhanVien = NhanVien_DAO.getNhanVien(taiKhoanHienTai.getMaNhanVien().getMaNhanVien());
 
-    private ArrayList<Product> allProducts = Product_DAO.loadProductFromDB();;
+    private ArrayList<Product> allProducts = Product_DAO.loadProductFromDB();
+    private ArrayList<KhuyenMai> allDiscount = KhuyenMai_DAO.getKhuyenMai();
+
     private VBox selectedBox = null;
 
     public static double tongTienUI = 0;
 
-
+    public double discount = 0.0;
+    public String khuyenMaiApDung = "null";
     public void initialize(){
+        txtNhanVien.setText(nhanVien.getTenNhanVien());
 
         cbbSize.getItems().addAll(Size.S, Size.M, Size.L);
         cbbSize.setValue(Size.M);
@@ -238,8 +241,25 @@ public class CreateOrderController {
         txtTim.textProperty().addListener((obs, oldText, newText) -> filterProductList());
         cbbSort.setOnAction(e -> filterProductList());
         cbbDanhMuc.setOnAction(e -> filterProductList());
+
+
+        //Sự kiện cho ô nhập mã khuyến mãi
+        tfMaKhuyenMai.setOnKeyReleased(e ->{
+            xuLiKhuyenMai(tfMaKhuyenMai.getText());
+            updateTotal();
+        });
     }
 
+    private void xuLiKhuyenMai(String text){
+        if (getTotal() == 0.0){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Thông báo");
+            alert.setContentText("Chưa món nào được thêm!");
+            alert.showAndWait();
+        }else{
+            getDiscount(text);
+        }
+    }
 
     private void xuLiTaoHoaDon() {
         if (tableDonHang.getItems().isEmpty()) {
@@ -269,7 +289,7 @@ public class CreateOrderController {
         hoaDon.setDate(LocalDate.now());
         hoaDon.setUserID(nhanVien==null?"none":nhanVien.getMaNhanVien());
         hoaDon.setTableID(maBan==""?null:maBan);
-        hoaDon.setSaleID(null);  //Khuyến mãi cần sửa đổi
+        hoaDon.setSaleID(khuyenMaiApDung);
         hoaDon.setTotal(tongTien);
         hoaDon.setBringBack(isHere.isSelected());
 
@@ -454,7 +474,6 @@ public class CreateOrderController {
 
             // Cập nhật vị trí bàn được chọn
             txtViTri.setText(b.getMaBan() + " - " + b.getTang().getTenTang());
-            System.out.println("Đã chọn: " + b.getMaBan());
 
             right.getSelectionModel().select(menu); // Chuyển sang tab "Menu"
         });
@@ -504,7 +523,6 @@ public class CreateOrderController {
 
                     // Thêm ImageView vào VBox
                     box.getChildren().add(imageView);
-                    System.out.println(imgPath);
                 } else {
                     System.err.println("Không thể tìm thấy ảnh: " + imgPath);
                 }
@@ -519,7 +537,6 @@ public class CreateOrderController {
 
         // Click để thêm vào đơn hàng
         box.setOnMouseClicked(e -> {
-            System.out.println("Clicked on: " + product.getTenSanPham());
             int i = showQuantityDialog(1);
             String mess = showNoteDialog("");
             addProductToOrder(product, i, mess);
@@ -630,15 +647,33 @@ public class CreateOrderController {
         for (OrderDetail chiTiet : tableDonHang.getItems()) {
             a += chiTiet.getTotal();
         }
-        return a;
+        return a * (1 - discount);
     }
+
+    private void getDiscount(String maKhuyenMai) {
+        boolean found = false;
+        for (KhuyenMai d : allDiscount) {
+            if (d.getMaKhuyenMai().equalsIgnoreCase(maKhuyenMai)) {
+                discount = d.getTiGia();
+                khuyenMaiApDung = d.getMaKhuyenMai();
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            discount = 0.0;
+            maKhuyenMai = "Không có";
+        }
+    }
+
 
     private void updateTotal() {
         tongTienUI = getTotal();
         // Định dạng tiền tệ
         DecimalFormat df = new DecimalFormat("#,###");
         // Cập nhật vào label txtTotal
-        txtTotal.setText("Tổng tiền: " + df.format(tongTienUI) + " đ");
+        txtTotal.setText(df.format(tongTienUI) + " đ");
     }
     public class SetQuantityController {
         @FXML
