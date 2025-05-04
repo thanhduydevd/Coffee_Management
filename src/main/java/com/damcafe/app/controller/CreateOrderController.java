@@ -60,7 +60,7 @@ public class CreateOrderController {
     private TabPane right;
 
     @FXML
-    private Label txtViTri ,txtTime,txtNhanVien,txtTotal;
+    private Label txtViTri ,txtNhanVien,txtTotal;
 
 
     @FXML
@@ -103,6 +103,14 @@ public class CreateOrderController {
 
         //Sự kiện click cho các button ở chức năng tạo đơn hàng
         btnPayment.setOnAction(e -> {
+            if (tableDonHang.getItems().isEmpty()) {
+                ShowDialog.showMessageDialog(btnPayment, "Chưa có món để thanh toán!");
+                return;
+            }
+            if (!isHere.isSelected() && txtViTri.getText().equals("Chưa chọn")) {
+                ShowDialog.showMessageDialog(btnPayment, "Vui lòng chọn bàn trước khi thanh toán!");
+                return;
+            }
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource(
                         "/com/damcafe/app/views/order/dialogs/payment.fxml"
@@ -116,6 +124,7 @@ public class CreateOrderController {
 
                 // Hiển thị và đợi kết quả
                 Optional<ButtonType> result = dialog.showAndWait();
+
 
                 if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.APPLY) {
                     xuLiTaoHoaDon(); // Gọi phương thức tạo hóa đơn nếu xác nhận
@@ -154,9 +163,10 @@ public class CreateOrderController {
                 khuVuc.setDisable(true);
                 right.getSelectionModel().select(menu);
                 txtViTri.setText("Chưa chọn");
+                System.out.println(txtViTri.getText());
             } else {
                 khuVuc.setDisable(false);
-                txtViTri.setText("Chưa chọn");
+//                txtViTri.setText("Chưa chọn");
             }
         });
 
@@ -266,12 +276,9 @@ public class CreateOrderController {
     }
 
     private void xuLiTaoHoaDon() {
-        if (tableDonHang.getItems().isEmpty()) {
-            ShowDialog.showMessageDialog(btnPayment, "Chưa có món để thanh toán!");
-            return;
-        }
 
-        if ( !isHere.isSelected() && txtViTri.getText().equals("Chưa chọn")) {
+
+        if ( !isHere.isSelected() || txtViTri.getText().equalsIgnoreCase("Chưa chọn")) {
             ShowDialog.showMessageDialog(btnPayment, "Vui lòng chọn bàn trước khi thanh toán!");
             return;
         }
