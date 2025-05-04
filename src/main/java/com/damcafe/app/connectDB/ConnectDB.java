@@ -18,9 +18,9 @@ public class ConnectDB {
 
     public Connection connect() throws SQLException {
         if (con == null || con.isClosed()) {
-            String url = "jdbc:sqlserver://35.238.175.153:1433;databasename=QuanCafe";
-            String user = "sqlserver";
-            String password = "admin";
+            String url = "jdbc:sqlserver://localhost:1433;databasename=QuanCafe";
+            String user = "sa";
+            String password = "sa123";
             con = DriverManager.getConnection(url, user, password);
         }
         return con;

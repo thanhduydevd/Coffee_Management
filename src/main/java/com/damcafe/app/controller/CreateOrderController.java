@@ -278,10 +278,6 @@ public class CreateOrderController {
     private void xuLiTaoHoaDon() {
 
 
-        if ( !isHere.isSelected() || txtViTri.getText().equalsIgnoreCase("Chưa chọn")) {
-            ShowDialog.showMessageDialog(btnPayment, "Vui lòng chọn bàn trước khi thanh toán!");
-            return;
-        }
 
         // Tạo mã hoá đơn mới (ví dụ tạm thời)
         String maHD = "HD" + System.currentTimeMillis();
@@ -290,16 +286,16 @@ public class CreateOrderController {
         double tongTien = getTotal();
 
         // Lấy mã bàn
-        String maBan = "";
+        String maBan = "Chưa chọn";
         if (maHD != null){
-            maBan = txtViTri.getText().split(" - ")[0];
+            if (!txtViTri.getText().equals("Chưa chọn")) maBan = txtViTri.getText().split(" - ")[0];
         }
 
         // Tạo hoá đơn
         Order hoaDon = new Order(maHD);
         hoaDon.setDate(LocalDate.now());
         hoaDon.setUserID(nhanVien==null?"none":nhanVien.getMaNhanVien());
-        hoaDon.setTableID(maBan==""?null:maBan);
+        hoaDon.setTableID(maBan=="Chưa chọn"?null:maBan);
         hoaDon.setSaleID(khuyenMaiApDung);
         hoaDon.setTotal(tongTien);
         hoaDon.setBringBack(isHere.isSelected());
@@ -331,7 +327,7 @@ public class CreateOrderController {
 
         // Xoá dữ liệu hiện tại
         tableDonHang.getItems().clear();
-        txtViTri.setText("");
+        txtViTri.setText("Chưa chọn");
         ShowDialog.showMessageDialog(btnPayment, "Thanh toán thành công!");
         inHoaDon(hoaDon,a);
     }
@@ -424,6 +420,7 @@ public class CreateOrderController {
         ObservableList<OrderDetail> currentList = tableDonHang.getItems();
 
         for (OrderDetail od : currentList) {
+
             if (od.getName().equals(product.getTenSanPham()) && od.getSize() == cbbSize.getValue()) {
                 od.setQuatity(od.getQuatity() + 1);
                 tableDonHang.refresh();  // Cập nhật lại TableView
@@ -463,6 +460,10 @@ public class CreateOrderController {
         Label labelTrangThai = new Label(b.getTang().getTenTang());
 
         box.getChildren().addAll(textTenBan, labelTrangThai);
+
+        if (b.getMaBan().equals("null")){
+            return;
+        }
         ban.getChildren().add(box);
 
         // Nếu bàn đang dùng, giữ màu active ban đầu
