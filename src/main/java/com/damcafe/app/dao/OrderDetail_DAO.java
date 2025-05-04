@@ -8,9 +8,11 @@ package com.damcafe.app.dao;/*
 import com.damcafe.app.connectDB.ConnectDB;
 import com.damcafe.app.entity.OrderDetail;
 import com.damcafe.app.entity.Size;
+import javafx.scene.chart.PieChart;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class OrderDetail_DAO {
     public static ArrayList<OrderDetail> loadOrderFromDB() {
@@ -114,6 +116,30 @@ public class OrderDetail_DAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /** Thống kê doanh thu theo loại đồ uống **/
+    public static List<PieChart.Data> getQuantityByCategory() {
+        List<PieChart.Data> list = new ArrayList<>();
+        String sql = "SELECT LoaiSanPham.tenLoaiSanPham, SUM(ChiTietHoaDon.soLuong) AS tongSoLuong " +
+                "FROM ChiTietHoaDon " +
+                "JOIN SanPham ON ChiTietHoaDon.maSanPham = SanPham.maSanPham " +
+                "JOIN LoaiSanPham ON SanPham.maLoaiSanPham = LoaiSanPham.maLoaiSanPham " +
+                "GROUP BY LoaiSanPham.tenLoaiSanPham";
+        try {
+            Connection con = ConnectDB.getConnection();
+            PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                String tenLoai = rs.getString("tenLoaiSanPham");
+                double soLuong = rs.getDouble("tongSoLuong");
+                list.add(new PieChart.Data(tenLoai, soLuong));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 }
 

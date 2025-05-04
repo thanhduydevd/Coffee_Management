@@ -146,13 +146,17 @@ public class CreateOrderController {
         ObservableList<OrderDetail> orderDetails = FXCollections.observableArrayList();
         tableDonHang.setItems(orderDetails);
 
+        txtViTri.setText("Chưa chọn");
+
         //xử lí tắt bàn thông qua radio mang về
         isHere.setOnAction(e -> {
             if (isHere.isSelected()) {
                 khuVuc.setDisable(true);
-                right.getSelectionModel().select(menu);  // Chuyển sang tab Menu
+                right.getSelectionModel().select(menu);
+                txtViTri.setText("Chưa chọn");
             } else {
                 khuVuc.setDisable(false);
+                txtViTri.setText("Chưa chọn");
             }
         });
 
@@ -267,7 +271,7 @@ public class CreateOrderController {
             return;
         }
 
-        if ( !isHere.isSelected() && txtViTri.getText() == null ) {
+        if ( !isHere.isSelected() && txtViTri.getText().equals("Chưa chọn")) {
             ShowDialog.showMessageDialog(btnPayment, "Vui lòng chọn bàn trước khi thanh toán!");
             return;
         }
@@ -449,7 +453,7 @@ public class CreateOrderController {
         box.getStylesheets().add(getClass().getResource("/com/damcafe/app/styles/dashboard_style.css").toExternalForm());
 
         Text textTenBan = new Text(b.getMaBan());
-        Label labelTrangThai = new Label(b.isUse() ? "Có khách" : "Trống");
+        Label labelTrangThai = new Label(b.getTang().getTenTang());
 
         box.getChildren().addAll(textTenBan, labelTrangThai);
         ban.getChildren().add(box);
@@ -671,9 +675,9 @@ public class CreateOrderController {
     private void updateTotal() {
         tongTienUI = getTotal();
         // Định dạng tiền tệ
-        DecimalFormat df = new DecimalFormat("#,###");
+        DecimalFormat df = new DecimalFormat("#,###.##");
         // Cập nhật vào label txtTotal
-        txtTotal.setText(df.format(tongTienUI) + " đ");
+        txtTotal.setText(df.format(tongTienUI) + "đ");
     }
     public class SetQuantityController {
         @FXML

@@ -1,7 +1,8 @@
 package com.damcafe.app.controller;
 
 import com.damcafe.app.connectDB.ConnectDB;
-import com.damcafe.app.dao.TrangChinh_DAO;
+import com.damcafe.app.dao.OrderDetail_DAO;
+import com.damcafe.app.dao.Order_DAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,10 +14,10 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.Map;
-import java.util.Random;
 
 public class MainPageController {
-    private TrangChinh_DAO trangChinh_DAO;
+    private Order_DAO order_dao;
+    private OrderDetail_DAO orderDetail_dao;
 
     @FXML
     private PieChart drinkChart;
@@ -36,7 +37,7 @@ public class MainPageController {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        trangChinh_DAO = new TrangChinh_DAO();
+        order_dao = new Order_DAO();
 
         /** Tải dữ liệu cho 2 biểu đồ **/
         loadPieChart();
@@ -48,40 +49,43 @@ public class MainPageController {
         DecimalFormat percent = new DecimalFormat("#.00");
 
         /** Tổng hóa đơn của ngày nay và phần trăm so với ngày trước **/
-        totalOrderToday.setText(trangChinh_DAO.getTotalOrderToday() + " hoá đơn");
-        if (trangChinh_DAO.getPercentageOrders() == 0.0){
+        totalOrderToday.setText(order_dao.getTotalOrderToday() + " hoá đơn");
+        if (order_dao.getTotalOrderToday() == 0){
             percentageOrders.setText("Chưa có hóa đơn");
         }else {
-            percentageOrders.setText(trangChinh_DAO.getPercentageOrders() >= 0 ? "+" + percent.format(trangChinh_DAO.getPercentageOrders()) + "%" : percent.format(trangChinh_DAO.getPercentageOrders()) + "%");
+            if (order_dao.getPercentageOrders() == 0.0){
+                percentageOrders.setText("+0%");
+            }else
+                percentageOrders.setText(order_dao.getPercentageOrders() >= 0 ? "+" + percent.format(order_dao.getPercentageOrders()) + "%" : percent.format(order_dao.getPercentageOrders()) + "%");
         }
-        if (trangChinh_DAO.getPercentageOrders() < 0.0)
+        if (order_dao.getPercentageOrders() < 0.0)
             percentageOrders.setStyle(String.format("-fx-fill: red;"));
 
         /** Tổng tiền của ngày nay và phần trăm so với ngày trước **/
-        totalMoneyToday.setText(currencyUnit.format(trangChinh_DAO.getTotalMoneyToday()));
-        if (trangChinh_DAO.getPercentageMoneyByDay() == 0.0){
+        totalMoneyToday.setText(currencyUnit.format(order_dao.getTotalMoneyToday()));
+        if (order_dao.getPercentageMoneyByDay() == 0.0){
             percentageMoneyByDay.setText("Chưa có hóa đơn");
         }else {
-            percentageMoneyByDay.setText(trangChinh_DAO.getPercentageMoneyByDay() >= 0 ? "+" + percent.format(trangChinh_DAO.getPercentageMoneyByDay()) + "%" : percent.format(trangChinh_DAO.getPercentageMoneyByDay()) + "%");
+            percentageMoneyByDay.setText(order_dao.getPercentageMoneyByDay() >= 0 ? "+" + percent.format(order_dao.getPercentageMoneyByDay()) + "%" : percent.format(order_dao.getPercentageMoneyByDay()) + "%");
         }
-        if (trangChinh_DAO.getPercentageMoneyByDay() < 0.0)
+        if (order_dao.getPercentageMoneyByDay() < 0.0)
             percentageMoneyByDay.setStyle(String.format("-fx-fill: red;"));
 
         /** Tổng tiền của tháng nay và phần trăm so với tháng trước **/
-        totalMoneyThisMonth.setText(currencyUnit.format(trangChinh_DAO.getTotalMoneyThisMonth()));
-        if (trangChinh_DAO.getPercentageMoneyThisMonth() == 0.0){
+        totalMoneyThisMonth.setText(currencyUnit.format(order_dao.getTotalMoneyThisMonth()));
+        if (order_dao.getPercentageMoneyThisMonth() == 0.0){
             percentageMoneyThisMonth.setText("Chưa có hóa đơn");
         }else {
-            percentageMoneyThisMonth.setText(trangChinh_DAO.getPercentageMoneyThisMonth() >= 0 ? "+" + percent.format(trangChinh_DAO.getPercentageMoneyThisMonth()) + "%" : percent.format(trangChinh_DAO.getPercentageMoneyThisMonth()) + "%");
+            percentageMoneyThisMonth.setText(order_dao.getPercentageMoneyThisMonth() >= 0 ? "+" + percent.format(order_dao.getPercentageMoneyThisMonth()) + "%" : percent.format(order_dao.getPercentageMoneyThisMonth()) + "%");
         }
-        if (trangChinh_DAO.getPercentageMoneyThisMonth() < 0.0)
+        if (order_dao.getPercentageMoneyThisMonth() < 0.0)
             percentageMoneyThisMonth.setStyle(String.format("-fx-fill: red;"));
     }
 
     /** Biểu đồ tròn **/
     private void loadPieChart() {
         ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList(
-                TrangChinh_DAO.getQuantityByCategory()
+                orderDetail_dao.getQuantityByCategory()
         );
 
         drinkChart.setData(pieData);
@@ -100,7 +104,7 @@ public class MainPageController {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Doanh thu tháng " + LocalDate.now().getMonthValue());
 
-        Map<Integer, Double> data = TrangChinh_DAO.getRevenueByDayInCurrentMonth();
+        Map<Integer, Double> data = order_dao.getRevenueByDayInCurrentMonth();
         int days = LocalDate.now().lengthOfMonth();
 
         ObservableList<String> categories = FXCollections.observableArrayList();
