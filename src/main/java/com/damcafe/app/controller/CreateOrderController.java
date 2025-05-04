@@ -201,9 +201,20 @@ public class CreateOrderController {
         btnQuantity.setOnAction(e->{
             OrderDetail selected = tableDonHang.getSelectionModel().getSelectedItem();
             if (selected != null) {
-                selected.setQuatity(showQuantityDialog(1));
+                selected.setQuatity(showQuantityDialog(selected.getQuatity()));
                 tableDonHang.refresh();
             } else {}
+        });
+        btnNote.setOnAction(e->{
+            OrderDetail od = tableDonHang.getSelectionModel().getSelectedItem();
+            String oldComment = od.getComment(); // Lưu lại ghi chú hiện tại
+            String newComment = showNoteDialog(oldComment); // Hiển thị dialog và lấy ghi chú mới
+
+            // Cập nhật ghi chú nếu người dùng nhập giá trị mới
+            if (!newComment.equals(oldComment)) {
+                od.setComment(newComment);
+                tableDonHang.refresh(); // Cập nhật lại bảng
+            }
         });
         btnCancel.setOnAction(e -> {
             cancelOrder();
