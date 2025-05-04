@@ -9,47 +9,43 @@ public class SetNoteController {
     private DialogPane dialogPane;
 
     @FXML
-    private TextArea abc;
+    private TextArea txtNote;
 
-    @FXML
     private ButtonType cancelButton, applyButton;
-
-    private String noteText = ""; // <-- Biến lưu ghi chú
-
-    @FXML
-    private TextArea txtNote = new TextArea();
 
     private String currentNote = "";
 
     public void setCurrentNote(String note) {
         this.currentNote = note;
-        txtNote.setText(note);
+        if (note.isBlank() || note == null) {
+            txtNote.setText("");
+        }else{
+            txtNote.setText(note);
+        }
+
     }
 
     public String getNoteTextString() {
-        return txtNote.getText(); // Trả về ghi chú mới
+        return txtNote.getText();
     }
 
     public void initialize() {
         cancelButton = new ButtonType("Huỷ bỏ", ButtonBar.ButtonData.CANCEL_CLOSE);
         applyButton = new ButtonType("Xác nhận", ButtonBar.ButtonData.APPLY);
+        txtNote.setText(currentNote);
+        dialogPane.getButtonTypes().addAll(cancelButton, applyButton);
 
-        dialogPane.getButtonTypes().add(cancelButton);
-        dialogPane.getButtonTypes().add(applyButton);
-
-        // Gán sự kiện cho nút "Xác nhận"
         Button applyBtn = (Button) dialogPane.lookupButton(applyButton);
         applyBtn.setOnAction(event -> {
-            suKienApply();  // Không cần truyền tham số
+            suKienApply();
         });
     }
 
     private void suKienApply() {
-        noteText = abc.getText();  // Lưu ghi chú
+        currentNote = txtNote.getText();
     }
 
     public String getNoteText() {
-        return noteText;
+        return currentNote;
     }
 }
-

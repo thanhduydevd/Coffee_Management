@@ -30,7 +30,7 @@
             <VBox spacing="5.0">
                <children>
                   <Label text="Nhập ghi chú:" />
-                  <TextArea fx:id="abc" prefHeight="200.0" promptText="Nhập ghi chú vào ô" style="-fx-background-color: #f5f3f2; -fx-border-color: transparent transparent transparent  #8B5A2B; -fx-border-width: 5px;" />
+                  <TextArea fx:id="txtNote" prefHeight="200.0" promptText="Nhập ghi chú vào ô" style="-fx-background-color: #f5f3f2; -fx-border-color: transparent transparent transparent  #8B5A2B; -fx-border-width: 5px;" />
                </children>
             </VBox>
          </children>

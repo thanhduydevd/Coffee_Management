@@ -228,7 +228,7 @@ public class CreateOrderController {
             } else {}
         });
 
-        cbbDanhMuc.getItems().addAll("Tất cả", "Cà phê", "Trà", "Sinh tố", "Khác");
+        cbbDanhMuc.getItems().addAll("Tất cả", "Cà phê", "Trà sữa", "Ước ép","Sinh tố", "Khác");
         cbbDanhMuc.setValue("Tất cả");
 
         cbbSort.getItems().addAll("Tên A-Z", "Tên Z-A", "Giá tăng dần", "Giá giảm dần");
