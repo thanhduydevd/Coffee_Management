@@ -12,7 +12,7 @@
    <header>
       <FlowPane alignment="CENTER" style="-fx-background-color: #8B5A2B;">
          <children>
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Chi Tiết Đơn Hàng QL001">
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Chi Tiết Đơn Hàng">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>

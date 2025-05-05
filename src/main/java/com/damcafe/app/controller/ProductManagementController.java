@@ -129,9 +129,12 @@ public class ProductManagementController {
         button_delete.setOnAction(e -> deleteProduct());
         button_update.setOnAction(e -> updateProduct());
         button_clear.setOnAction(e -> clearForm());
-        product_search_name.setOnKeyReleased(e -> filterAll());
-        product_search_category.setOnAction(e -> filterAll());
-        product_search_sort.setOnAction(e -> filterAll());
+        product_search_name.setOnKeyReleased(e -> searchProductByName());
+        product_search_category.setOnAction(e -> searchProductByCategory());
+        product_search_sort.setOnAction(e -> searchProductBySort());
+//        product_search_name.setOnKeyReleased(e -> filterAll());
+//        product_search_category.setOnAction(e -> filterAll());
+//        product_search_sort.setOnAction(e -> filterAll());
 
         productTable.setOnMouseClicked(e -> {
             Product p = productTable.getSelectionModel().getSelectedItem();
@@ -165,7 +168,7 @@ public class ProductManagementController {
 
             // Hiển thị tên ảnh lên UI
             product_image.setText(selectedRelativeName);
-            System.out.println("Chọn ảnh: " + selectedRelativeName);
+//            System.out.println("Chọn ảnh: " + selectedRelativeName);
 
             // Đường dẫn thư mục đích ngoài resources
             Path targetPath = Paths.get("src/main/data_images/products/" + selectedRelativeName);
@@ -173,7 +176,7 @@ public class ProductManagementController {
             try {
                 Files.createDirectories(targetPath.getParent()); // Đảm bảo thư mục tồn tại
                 Files.copy(file.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
-                System.out.println("Đã lưu ảnh vào: " + targetPath);
+//                System.out.println("Đã lưu ảnh vào: " + targetPath);
             } catch (IOException e) {
                 System.err.println("Lỗi khi lưu ảnh: " + e.getMessage());
             }
@@ -374,6 +377,58 @@ public class ProductManagementController {
         productTable.setItems(FXCollections.observableArrayList(filteredList));
     }
 
+    private void searchProductByName() {
+        String searchText = product_search_name.getText().trim();
+
+        if (searchText.isEmpty()) {
+            productTable.setItems(FXCollections.observableArrayList(productsDB));
+            return;
+        }
+        List<Product> filteredList = new ArrayList<>();
+        for (Product p : productList) {
+            if (p.getTenSanPham().toLowerCase().contains(searchText.toLowerCase())) {
+                filteredList.add(p);
+            }
+        }
+        productTable.setItems(FXCollections.observableArrayList(filteredList));
+    }
+
+    private void searchProductByCategory() {
+        ProductCategory selectedCategory = product_search_category.getValue();
+
+        // Nếu chọn null hoặc "Tất cả" thì hiển thị tất cả sản phẩm
+        if (selectedCategory == null || selectedCategory.getMaLoaiSanPham().equals("Tất cả")) {
+            productTable.setItems(FXCollections.observableArrayList(productsDB));
+            return;
+        }
+
+        List<Product> filteredList = new ArrayList<>();
+        for (Product p : productList) {
+            if (p.getLoaiSanPham().getMaLoaiSanPham().equals(selectedCategory.getMaLoaiSanPham())) {
+                filteredList.add(p);
+            }
+        }
+        productTable.setItems(FXCollections.observableArrayList(filteredList));
+    }
+
+    private void searchProductBySort() {
+        String selectedSort = product_search_sort.getValue();
+        if (selectedSort.equals("Mặc định")) {
+            productTable.setItems(FXCollections.observableArrayList(productsDB));
+            return;
+        }
+        List<Product> sortedList = new ArrayList<>(productList);
+        if (selectedSort.equals("Tên A → Z")) {
+            sortedList.sort((p1, p2) -> p1.getTenSanPham().compareTo(p2.getTenSanPham()));
+        } else if (selectedSort.equals("Tên Z → A")) {
+            sortedList.sort((p1, p2) -> p2.getTenSanPham().compareTo(p1.getTenSanPham()));
+        } else if (selectedSort.equals("Giá thấp → cao")) {
+            sortedList.sort((p1, p2) -> Double.compare(p1.getGiaGoc(), p2.getGiaGoc()));
+        } else if (selectedSort.equals("Giá cao → thấp")) {
+            sortedList.sort((p1, p2) -> Double.compare(p2.getGiaGoc(), p1.getGiaGoc()));
+        }
+        productTable.setItems(FXCollections.observableArrayList(sortedList));
+    }
     private void clearForm() {
         product_id.clear(); product_name.clear(); product_price.clear(); product_describe.clear();
         product_category.getSelectionModel().clearSelection();
@@ -381,4 +436,5 @@ public class ProductManagementController {
         product_image.setText("Chọn ảnh sản phẩm");
         product_id.setEditable(true);
     }
+
 }
